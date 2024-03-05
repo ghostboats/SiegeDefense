@@ -234,12 +234,17 @@ end
 -- Function to handle startgame status
 function HandleStartGameMap1(guid)
     local hostChar = Osi.GetHostCharacter()
-    local x, y, z = Osi.GetPosition(hostChar)
-    local combinedString = tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
-    Osi.OpenMessageBox(hostChar, combinedString)
     TeleportCharacter(guid, MAP_1)
-    local barricadeTemplateX, barricadeTemplateY, barricadeTemplateZ = x + 20, y, z
-    Osi.CreateAt(CRATE, barricadeTemplateX, barricadeTemplateY, barricadeTemplateZ, 0, 1, "")
+    Osi.OpenMessageBox(hostChar, 'moving to game location')
+	local x, y, z = Osi.GetPosition(hostChar)
+    local combinedString = tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
+	--Osi.OpenMessageBox(hostChar, combinedString)
+	local zz = z + 2
+	local telly_me = {x, y, zz}
+    TeleportCharacter(guid, telly_me)
+    Osi.CreateAt(CRATE, x, y, z, 0, 1, "")
+	Osi.CreateAt(CRATE, x + 1, y, z, 0, 1, "")
+	Osi.CreateAt(CRATE, x + 2, y, z, 0, 1, "")
 end
 
 -- Function to teleport a character to specified coordinates
