@@ -173,11 +173,13 @@ PersistentVars = {}
 -------------- Coordinates for Teleport -----------
 local TRANSPONDER_POS		=  {-84.692207336426, 19.01319694519, -387.45742797852}
 
-local MAP_1                 = {220.62088012695, 20.88671875, 321.24578857422}
+local MAP_1                 = {220.62478637695,15.830078125,322.23071289062}
 
 local BARRICADETEMPLATE		= "d590884d-55a2-4136-9777-531ee7d53f7e"
 
 local CRATE		= "23578669-058f-4318-8e51-87523fc1307f"
+
+local Crate1 = {220.62478637695,15.830078125,322.23071289062}
 
 
 -- LevelUnloading Listener
@@ -218,17 +220,17 @@ end)
 -------------------------------------------------------------------------------------------------------------------------------
 -- Function to handle debug
 function HandleDebug(guid)
-    local hostChar = Osi.GetHostCharacter()
-    local x, y, z = Osi.GetPosition(hostChar)
-    local combinedString = tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
     --Osi.OpenMessageBox(hostChar, combinedString)
-	local zz = z + 2
-	local telly_me = {x, y, zz}
-    TeleportCharacter(guid, telly_me)
-    --Osi.CreateAt(CRATE, x, y, z, 0, 1, "")
-	new_item = Osi.CreateAt("23578669-058f-4318-8e51-87523fc1307f", x, y, z, 0, 1, "")
 	--newX, newY, newZ = Osi.FindValidPosition(x, y, z, 10, new_item, 1.4)
 	--Osi.ItemMoveToPosition(new_item, newX, newY, newZ, 100, 100, "")
+	local hostChar = Osi.GetHostCharacter()
+    local x, y, z = Osi.GetPosition(hostChar)
+    local crate = "{" .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z) .. "}"
+    Ext.Utils.Print("local Crate1 = " .. crate)
+	new_item = Osi.CreateAt("23578669-058f-4318-8e51-87523fc1307f", x, y, z, 0, 1, "")
+	local yy = y + 1.1
+	local telly_me = {x, yy, z}
+	TeleportCharacter(guid, telly_me)
 end
 
 -- Function to handle startgame status
@@ -237,14 +239,17 @@ function HandleStartGameMap1(guid)
     TeleportCharacter(guid, MAP_1)
     Osi.OpenMessageBox(hostChar, 'moving to game location')
 	local x, y, z = Osi.GetPosition(hostChar)
-    local combinedString = tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
+    --local combinedString = tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
 	--Osi.OpenMessageBox(hostChar, combinedString)
-	local zz = z + 2
-	local telly_me = {x, y, zz}
-    TeleportCharacter(guid, telly_me)
-    Osi.CreateAt(CRATE, x, y, z, 0, 1, "")
-	Osi.CreateAt(CRATE, x + 1, y, z, 0, 1, "")
-	Osi.CreateAt(CRATE, x + 2, y, z, 0, 1, "")
+	--local zz = z + 1
+	--local telly_me = {x, y, zz}
+    --TeleportCharacter(guid, telly_me)
+    new_item = Osi.CreateAt(CRATE, x, y, z, 0, 1, "")
+	local q, w, e = Osi.GetPosition(new_item)
+	local combinedString = tostring(q) .. ", " .. tostring(w) .. ", " .. tostring(e)
+	Ext.Utils.Print(combinedString)
+	--Osi.CreateAt(CRATE, x + 1, y, z, 0, 1, "")
+	--Osi.CreateAt(CRATE, x + 2, y, z, 0, 1, "")
 end
 
 -- Function to teleport a character to specified coordinates
@@ -254,6 +259,17 @@ function TeleportCharacter(character, pos)
 		local y = pos[2]
 		local z = pos[3]
 		Osi.TeleportToPosition(character, x, y, z, "", 1, 1, 1, 1, 1)
+	else
+		Ext.Utils.Print("Error: Invalid parameters for teleportation.")
+	end
+end
+
+-- Function to teleport a character to specified coordinates
+function ExtractLocation(pos)
+	if #pos == 3 then
+		local x = pos[1]
+		local y = pos[2]
+		local z = pos[3]
 	else
 		Ext.Utils.Print("Error: Invalid parameters for teleportation.")
 	end
