@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<save>
+	<version major="4" minor="0" revision="9" build="0" lslib_meta="v1,bswap_guids" />
+	<region id="Templates">
+		<node id="Templates">
+			<children>
+                <node id="GameObjects">
+					<attribute id="AnubisConfigName" type="FixedString" value="CHA_FL0_DeadSkeleton_Melee_01" />
+					<attribute id="Archetype" type="FixedString" value="melee_stupid" />
+					<attribute id="BloodSurfaceType" type="FixedString" value="SurfaceNone" />
+					<attribute id="CharacterVisualResourceID" type="FixedString" value="022791e8-9e8c-0869-ad09-bdd685b409ba" />
+					<attribute id="CombatGroupID" type="FixedString" value="b8945d7f-7a8d-ab9a-0a47-63b124322028" />
+					<attribute id="DisplayName" type="TranslatedString" handle="h91c626b9geb1fg4275g827fg58c77af2daa6" version="3" />
+					<attribute id="Equipment" type="FixedString" value="EQP_Scimitar" />
+					<attribute id="Faction" type="guid" value="6ce9503d-92cf-3e01-aa83-6065f22e6747" />
+					<attribute id="Flag" type="int32" value="1" />
+					<attribute id="GroupID" type="uint32" value="17968" />
+					<attribute id="Icon" type="FixedString" value="022791e8-9e8c-0869-ad09-bdd685b409ba-EQP_Scimitar_(Icon_Skeleton)" />
+					<attribute id="IsLootable" type="bool" value="True" />
+					<attribute id="LevelName" type="FixedString" value="WLD_Main_A" />
+					<attribute id="LevelOverride" type="int32" value="3" />
+					<attribute id="MapKey" type="FixedString" value="ebf854f1-7971-4f81-a2b7-e4b79b550b85" />
+					<attribute id="Name" type="LSString" value="S_CHA_FL0_DeadSkeleton_Melee_01" />
+					<attribute id="SoftBodyCollisionTemplate" type="FixedString" value="4350b66a-f56a-4f2a-9c60-b5a56609afa4" />
+					<attribute id="Stats" type="FixedString" value="CHA_Skeleton_Strong" />
+					<attribute id="TemplateName" type="FixedString" value="e29c34ab-0863-4775-b8af-964fa90451d2" />
+					<attribute id="Type" type="FixedString" value="character" />
+					<attribute id="_OriginalFileVersion_" type="int64" value="144678138029277484" />
+					<children>
+						<node id="LayerList">
+							<children>
+								<node id="Layers">
+									<children>
+										<node id="Object">
+											<attribute id="MapKey" type="FixedString" value="WLD_Main_A" />
+											<children>
+												<node id="Layer">
+													<attribute id="Object" type="guid" value="0d1b3e0e-930a-23a0-2ad9-f0f3deba210b" />
+												</node>
+												<node id="Layer">
+													<attribute id="Object" type="guid" value="784e0a2b-908e-edcc-02dd-e6aa5c34dc6c" />
+												</node>
+											</children>
+										</node>
+									</children>
+								</node>
+							</children>
+						</node>
+						<node id="LocomotionParams" />
+						<node id="SkillList">
+							<children>
+								<node id="Skill">
+									<attribute id="AIFlags" type="uint16" value="0" />
+									<attribute id="FallbackStartRound" type="int32" value="-1" />
+									<attribute id="LearningStrategy" type="uint8" value="0" />
+									<attribute id="MinimumImpact" type="int32" value="0" />
+									<attribute id="OnlyCastOnSelf" type="bool" value="False" />
+									<attribute id="ScoreModifier" type="float" value="1" />
+									<attribute id="Skill" type="FixedString" value="Projectile_StoneThrow" />
+									<attribute id="SpellCastingAbility" type="uint8" value="0" />
+									<attribute id="StartRound" type="int32" value="0" />
+									<children>
+										<node id="OnlyInNPCLoadout">
+											<attribute id="Object" type="guid" value="db8515f8-3741-4242-a05a-f9f93e1a912c" />
+										</node>
+										<node id="SourceConditions">
+											<attribute id="MaximumHealthPercentage" type="int32" value="100" />
+											<attribute id="MinimumHealthPercentage" type="int32" value="0" />
+											<children>
+												<node id="Tags" />
+											</children>
+										</node>
+										<node id="TargetConditions">
+											<attribute id="MaximumHealthPercentage" type="int32" value="100" />
+											<attribute id="MinimumHealthPercentage" type="int32" value="0" />
+											<children>
+												<node id="Tags" />
+											</children>
+										</node>
+									</children>
+								</node>
+							</children>
+						</node>
+						<node id="TradeTreasures">
+							<children>
+								<node id="TreasureItem">
+									<attribute id="Object" type="FixedString" value="CHA_Sanctum_Skeletons" />
+								</node>
+							</children>
+						</node>
+						<node id="Transform">
+							<attribute id="Position" type="fvec3" value="-292.3456 15.04861 -254.4802" />
+							<attribute id="RotationQuat" type="fvec4" value="0 0.4455358 0 0.8952641" />
+							<attribute id="Scale" type="float" value="1.1" />
+						</node>
+						<node id="Treasures">
+							<children>
+								<node id="TreasureItem">
+									<attribute id="Object" type="FixedString" value="Empty" />
+								</node>
+							</children>
+						</node>
+					</children>
+				</node>
+			</children>
+		</node>
+	</region>
+</save>

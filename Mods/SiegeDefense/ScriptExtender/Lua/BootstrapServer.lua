@@ -181,6 +181,10 @@ local CRATE		= "23578669-058f-4318-8e51-87523fc1307f"
 
 local Crate1 = {220.62478637695,15.830078125,322.23071289062}
 
+local Crate2 = {220.62478637695,15.830078125,317.23071289062}
+
+local statue_test = {-300.3968,15.04724,-250.2776}
+
 
 -- LevelUnloading Listener
 Ext.Osiris.RegisterListener("LevelUnloading", 1, "after", function(level)
@@ -208,6 +212,8 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
 	--Ext.Utils.Print(status)
 	if status == "StartGame" then
 		HandleStartGameMap1(guid)
+		local hostChar = Osi.GetHostCharacter()
+		TeleportCharacter(hostChar, statue_test)
 	elseif status == "LeaveTut" then
 		local hostChar = Osi.GetHostCharacter()
 		TeleportCharacter(hostChar, TRANSPONDER_POS)
@@ -229,7 +235,7 @@ function HandleDebug(guid)
     Ext.Utils.Print("local Crate1 = " .. crate)
 	new_item = Osi.CreateAt("23578669-058f-4318-8e51-87523fc1307f", x, y, z, 0, 1, "")
 	local yy = y + 1.1
-	local telly_me = {x, yy, z}
+	local telly_me = {x, yy, z} 
 	TeleportCharacter(guid, telly_me)
 end
 
@@ -238,18 +244,23 @@ function HandleStartGameMap1(guid)
     local hostChar = Osi.GetHostCharacter()
     TeleportCharacter(guid, MAP_1)
     Osi.OpenMessageBox(hostChar, 'moving to game location')
+
 	local x, y, z = Osi.GetPosition(hostChar)
-    --local combinedString = tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
-	--Osi.OpenMessageBox(hostChar, combinedString)
-	--local zz = z + 1
-	--local telly_me = {x, y, zz}
-    --TeleportCharacter(guid, telly_me)
     new_item = Osi.CreateAt(CRATE, x, y, z, 0, 1, "")
-	local q, w, e = Osi.GetPosition(new_item)
-	local combinedString = tostring(q) .. ", " .. tostring(w) .. ", " .. tostring(e)
+	local combinedString = "initial: " .. tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
 	Ext.Utils.Print(combinedString)
+
+	last_item = PlaceBox(new_item, 'east', 8, 3)
+	last_item = PlaceBox(last_item, 'south', 4, 4)
+	last_item = PlaceBox(last_item, 'east', 2, 1)
 	--Osi.CreateAt(CRATE, x + 1, y, z, 0, 1, "")
 	--Osi.CreateAt(CRATE, x + 2, y, z, 0, 1, "")
+
+	local rx, ry, rz = Crate2[1], Crate2[2], Crate2[3]
+	new_item = Osi.CreateAt(CRATE, rx, ry, rz, 0, 1, "")
+	last_item = PlaceBox(new_item, 'east', 3, 3)
+	last_item = PlaceBox(last_item, 'south', 4, 4)
+	last_item = PlaceBox(last_item, 'east', 2, 1)
 end
 
 -- Function to teleport a character to specified coordinates
@@ -264,14 +275,35 @@ function TeleportCharacter(character, pos)
 	end
 end
 
--- Function to teleport a character to specified coordinates
-function ExtractLocation(pos)
-	if #pos == 3 then
-		local x = pos[1]
-		local y = pos[2]
-		local z = pos[3]
-	else
-		Ext.Utils.Print("Error: Invalid parameters for teleportation.")
-	end
-end
+function PlaceBox(item, direction, distance, height)
+    direction = direction or "east"  -- Setting default value
+    distance = distance or 0
+    height = height or 1
+    local x, y, z = Osi.GetPosition(item)
+    local new_item
 
+    for current_height = 0, height - 1 do
+        if direction == 'north' then
+            for current_distance = 1, distance do
+                new_item = Osi.CreateAt(CRATE, x, y + current_height, z + current_distance, 0, 1, "")
+                Ext.Utils.Print("Created CRATE at x: " .. tostring(x) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z + current_distance))
+            end
+        elseif direction == 'east' then
+            for current_distance = 1, distance do
+                new_item = Osi.CreateAt(CRATE, x + current_distance, y + current_height, z, 0, 1, "")
+                Ext.Utils.Print("Created CRATE at x: " .. tostring(x + current_distance) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z))
+            end
+        elseif direction == 'south' then
+            for current_distance = 1, distance do
+                new_item = Osi.CreateAt(CRATE, x, y + current_height, z - current_distance, 0, 1, "")
+                Ext.Utils.Print("Created CRATE at x: " .. tostring(x) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z - current_distance))
+            end
+        elseif direction == 'west' then
+            for current_distance = 1, distance do
+                new_item = Osi.CreateAt(CRATE, x - current_distance, y + current_height, z, 0, 1, "")
+                Ext.Utils.Print("Created CRATE at x: " .. tostring(x - current_distance) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z))
+            end
+        end
+    end
+    return new_item
+end
