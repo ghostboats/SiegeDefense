@@ -212,8 +212,8 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
 	--Ext.Utils.Print(status)
 	if status == "StartGame" then
 		HandleStartGameMap1(guid)
-		local hostChar = Osi.GetHostCharacter()
-		TeleportCharacter(hostChar, statue_test)
+		--local hostChar = Osi.GetHostCharacter()
+		--TeleportCharacter(hostChar, statue_test)
 	elseif status == "LeaveTut" then
 		local hostChar = Osi.GetHostCharacter()
 		TeleportCharacter(hostChar, TRANSPONDER_POS)
@@ -261,6 +261,9 @@ function HandleStartGameMap1(guid)
 	last_item = PlaceBox(new_item, 'east', 3, 3)
 	last_item = PlaceBox(last_item, 'south', 4, 4)
 	last_item = PlaceBox(last_item, 'east', 2, 1)
+
+	local entityID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), x, y, z, 0,0,"")
+	--Osi.CharacterMoveToPosition(character, x, y, z, movementSpeed, event, moveID)
 end
 
 -- Function to teleport a character to specified coordinates
