@@ -263,7 +263,7 @@ function HandleStartGameMap1(guid)
 	last_item = PlaceBox(last_item, 'east', 2, 1)
 
 	local entityID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), x, y, z, 0,0,"")
-	--Osi.CharacterMoveToPosition(character, x, y, z, movementSpeed, event, moveID)
+	Osi.CharacterMoveToPosition(entityID, 232.58329772949, 16.96875, 317.08343505859, '10', "", 1)
 end
 
 -- Function to teleport a character to specified coordinates
