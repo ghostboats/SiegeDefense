@@ -12,7 +12,7 @@
 					<attribute id="DisplayName" type="TranslatedString" handle="ha238f5606fa34544bb3ab130d27a92f09gca" version="1" />
 					<attribute id="Icon" type="FixedString" value="Item_CONT_GEN_Crate_Wood_A" />
                     <attribute id="IsInteractionDisabled" type="bool" value="True" />
-					<attribute id="IsPointerBlocker" type="bool" value="False" />
+					<attribute id="IsPointerBlocker" type="bool" value="True" />
 					<attribute id="InventoryType" type="uint8" value="2" />
 					<attribute id="LevelName" type="FixedString" value="" />
 					<attribute id="MapKey" type="FixedString" value="23578669-058f-4318-8e51-87523fc1307f" />
@@ -20,6 +20,7 @@
 					<attribute id="ParentTemplateId" type="FixedString" value="74f1afc5-a594-43c7-90ad-ddc58cdd5c52" />
 					<attribute id="PhysicsTemplate" type="FixedString" value="ef61eb15-2ec4-4acb-95c9-bf557d0969ea" />
 					<attribute id="ReadinessFlags" type="uint32" value="128" />
+					<attribute id="Stats" type="FixedString" value="OBJ_GenericImmutableObject" />
 					<attribute id="Tooltip" type="uint8" value="0" />
 					<attribute id="Type" type="FixedString" value="item" />
 					<attribute id="VisualTemplate" type="FixedString" value="98424ae7-bd64-4d88-bdda-aeb0d93bc6d1" />

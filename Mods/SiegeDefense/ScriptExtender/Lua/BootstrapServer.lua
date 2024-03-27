@@ -245,26 +245,90 @@ function HandleStartGameMap1(guid)
     TeleportCharacter(guid, MAP_1)
     Osi.OpenMessageBox(hostChar, 'moving to game location')
 
-	local x, y, z = Osi.GetPosition(hostChar)
+    local x, y, z = Osi.GetPosition(hostChar)
     new_item = Osi.CreateAt(CRATE, x, y, z, 0, 1, "")
-	local combinedString = "initial: " .. tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
-	Ext.Utils.Print(combinedString)
+    local combinedString = "initial: " .. tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
+    Ext.Utils.Print(combinedString)
 
-	last_item = PlaceBox(new_item, 'east', 8, 3)
-	last_item = PlaceBox(last_item, 'south', 4, 4)
-	last_item = PlaceBox(last_item, 'east', 2, 1)
-	--Osi.CreateAt(CRATE, x + 1, y, z, 0, 1, "")
-	--Osi.CreateAt(CRATE, x + 2, y, z, 0, 1, "")
+    -- Placing boxes with multiple directions and distances
+    local placements = {
+        {direction = 'east', distance = 8, height = 5},
+        {direction = 'south', distance = 5, height = 5},
+        {direction = 'east', distance = 5, height = 5},
+        {direction = 'north', distance = 9, height = 5},
+        {direction = 'east', distance = 8, height = 5},
+    }
+    last_item = PlaceBoxes(new_item, placements)
 
-	local rx, ry, rz = Crate2[1], Crate2[2], Crate2[3]
-	new_item = Osi.CreateAt(CRATE, rx, ry, rz, 0, 1, "")
-	last_item = PlaceBox(new_item, 'east', 3, 3)
-	last_item = PlaceBox(last_item, 'south', 4, 4)
-	last_item = PlaceBox(last_item, 'east', 2, 1)
+    local rx, ry, rz = Crate2[1], Crate2[2], Crate2[3]
+    new_item = Osi.CreateAt(CRATE, rx, ry, rz, 0, 1, "")
+    placements = {
+        {direction = 'east', distance = 3, height = 5},
+        {direction = 'south', distance = 5, height = 5},
+        {direction = 'east', distance = 15, height = 5},
+        {direction = 'north', distance = 9, height = 5},
+        {direction = 'east', distance = 3, height = 5},
+    }
+    last_item = PlaceBoxes(new_item, placements)
 
-	local entityID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), x, y, z, 0,0,"")
-	Osi.CharacterMoveToPosition(entityID, 232.58329772949, 16.96875, 317.08343505859, '10', "", 1)
+    local entityID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), 223.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    Osi.CharacterMoveToPosition(entityID, 235.58329772949, 16.96875, 317.08343505859, '10', "", 1)
 end
+
+function PlaceBoxes(item, placements)
+    local new_item = item
+    local last_first_row_item = nil  -- Variable to store the last item of the first row
+    local x, y, z = Osi.GetPosition(new_item)
+
+    for _, placement in ipairs(placements) do
+        local direction = placement.direction or "east"
+        local distance = placement.distance or 0
+        local height = placement.height or 1
+
+        for current_height = 0, height - 1 do
+            for current_distance = 1, distance do
+                if direction == 'north' then
+                    new_item = Osi.CreateAt(CRATE, x, y + current_height, z + current_distance, 0, 1, "")
+                elseif direction == 'east' then
+                    new_item = Osi.CreateAt(CRATE, x + current_distance, y + current_height, z, 0, 1, "")
+                elseif direction == 'south' then
+                    new_item = Osi.CreateAt(CRATE, x, y + current_height, z - current_distance, 0, 1, "")
+                elseif direction == 'west' then
+                    new_item = Osi.CreateAt(CRATE, x - current_distance, y + current_height, z, 0, 1, "")
+                end
+
+                -- Storing the last item of the first row
+                if current_height == 0 and current_distance == distance then
+                    last_first_row_item = new_item
+                end
+            end
+            Ext.Utils.Print('Row Created At Height: ' .. tostring(current_height) .. '    Direction: ' .. direction)
+        end
+        -- Update x, y, z for the next placement based on the last item of the first row
+        x, y, z = Osi.GetPosition(last_first_row_item)
+    end
+
+    return last_first_row_item  -- Return the last item of the first row
+end
+
+
+function CreateWallBetweenCrates(crate1, crate2, crateID, height)
+    local x1, y1, z1 = table.unpack(crate1)
+    local x2, y2, z2 = table.unpack(crate2)
+
+    -- Calculate the z-axis distance and direction
+    local distance = math.abs(z2 - z1)
+    local direction = (z2 > z1) and 1 or -1
+
+    for i = 0, distance do
+        for h = 0, height - 1 do
+            -- Adjust the z-coordinate for each crate based on the direction
+            local z = z1 + (i * direction)
+            Osi.CreateAt(crateID, x1, y1 + h, z, 0, 1, "")
+        end
+    end
+end
+
 
 -- Function to teleport a character to specified coordinates
 function TeleportCharacter(character, pos)
@@ -276,37 +340,4 @@ function TeleportCharacter(character, pos)
 	else
 		Ext.Utils.Print("Error: Invalid parameters for teleportation.")
 	end
-end
-
-function PlaceBox(item, direction, distance, height)
-    direction = direction or "east"  -- Setting default value
-    distance = distance or 0
-    height = height or 1
-    local x, y, z = Osi.GetPosition(item)
-    local new_item
-
-    for current_height = 0, height - 1 do
-        if direction == 'north' then
-            for current_distance = 1, distance do
-                new_item = Osi.CreateAt(CRATE, x, y + current_height, z + current_distance, 0, 1, "")
-                Ext.Utils.Print("Created CRATE at x: " .. tostring(x) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z + current_distance))
-            end
-        elseif direction == 'east' then
-            for current_distance = 1, distance do
-                new_item = Osi.CreateAt(CRATE, x + current_distance, y + current_height, z, 0, 1, "")
-                Ext.Utils.Print("Created CRATE at x: " .. tostring(x + current_distance) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z))
-            end
-        elseif direction == 'south' then
-            for current_distance = 1, distance do
-                new_item = Osi.CreateAt(CRATE, x, y + current_height, z - current_distance, 0, 1, "")
-                Ext.Utils.Print("Created CRATE at x: " .. tostring(x) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z - current_distance))
-            end
-        elseif direction == 'west' then
-            for current_distance = 1, distance do
-                new_item = Osi.CreateAt(CRATE, x - current_distance, y + current_height, z, 0, 1, "")
-                Ext.Utils.Print("Created CRATE at x: " .. tostring(x - current_distance) .. ", y: " .. tostring(y + current_height) .. ", z: " .. tostring(z))
-            end
-        end
-    end
-    return new_item
 end
