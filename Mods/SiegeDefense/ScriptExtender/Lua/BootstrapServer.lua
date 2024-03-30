@@ -254,9 +254,9 @@ function HandleStartGameMap1(guid)
     local placements = {
         {direction = 'east', distance = 8, height = 5},
         {direction = 'south', distance = 5, height = 5},
-        {direction = 'east', distance = 5, height = 5},
-        {direction = 'north', distance = 9, height = 5},
-        {direction = 'east', distance = 8, height = 5},
+        {direction = 'east', distance = 6, height = 5},
+        {direction = 'north', distance = 8, height = 5},
+        {direction = 'east', distance = 9, height = 5},
     }
     last_item = PlaceBoxes(new_item, placements)
 
@@ -265,14 +265,41 @@ function HandleStartGameMap1(guid)
     placements = {
         {direction = 'east', distance = 3, height = 5},
         {direction = 'south', distance = 5, height = 5},
-        {direction = 'east', distance = 15, height = 5},
-        {direction = 'north', distance = 9, height = 5},
-        {direction = 'east', distance = 3, height = 5},
+        {direction = 'east', distance = 16, height = 5},
+        {direction = 'north', distance = 8, height = 5},
+        {direction = 'east', distance = 4, height = 5},
     }
     last_item = PlaceBoxes(new_item, placements)
 
-    local entityID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), 223.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
-    Osi.CharacterMoveToPosition(entityID, 235.58329772949, 16.96875, 317.08343505859, '10', "", 1)
+    --local golemID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), 223.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    local mephitemplateID = Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
+    local mephitID = CreateAt(mephitemplateID, 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    --Osi.CharacterMoveToPosition(golemID, 245.22763061523, 17.1201171875, 322.94619750977, '10', "", 1)
+    Osi.CharacterMoveToPosition(mephitID, 245.22763061523, 17.1201171875, 322.94619750977, '10', "", 1)
+    set_creature_hostile(mephitemplateID,mephitID)
+    
+    local golemFaction = Osi.GetFaction("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255")
+    local mephitFaction = Osi.GetFaction("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
+    local hostFaction = Osi.GetFaction(hostChar)
+    local factionString = "Golem Faction: " .. tostring(golemFaction) .. ", Mephit Faction: " .. tostring(mephitFaction) .. ", Host Faction: " .. tostring(hostFaction)
+    Ext.Utils.Print(factionString)
+    --Golem Faction: Act1_UND_KethericCity_Golem_40a90873-e3f0-478c-99f9-11e71f068f55, Mephit Faction: Act1_HAG_WoodWoad_5b02a4d5-fdca-428d-a19d-dbc73e0bd777, Host Faction: Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7
+    --Osi.SetHostileAndEnterCombat()("Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7","Act1_HAG_WoodWoad_5b02a4d5-fdca-428d-a19d-dbc73e0bd777")
+    --Osi.ForceTurnBasedMode(hostChar, 1) i think nope
+    --Osi.EnterCombat(hostChar,mephitID) nope
+    --Osi.SetHostileAndEnterCombat("Act1_HAG_WoodWoad_5b02a4d5-fdca-428d-a19d-dbc73e0bd777","Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7", mephitID, hostChar) nope
+    local golemGroupID = Osi.GetCombatGroupID("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255")
+    local mephitGroupID = Osi.GetCombatGroupID("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
+    local hostGroupID = Osi.GetCombatGroupID("Player1_169d0520-1eb0-f576-d819-74850d49eaaa")
+    local groupIDString = "Golem Group ID: " .. tostring(golemGroupID) .. ", Mephit Group ID: " .. tostring(mephitGroupID) .. ", Host Group ID: " .. tostring(hostGroupID)
+    Ext.Utils.Print(groupIDString)
+    --Golem Group ID: a78e643e-ecdb-3d86-7e62-8a2eaf7c8a6f, Mephit Group ID: 8a17e0b6-fc74-5603-5e4a-139a1bbd7ac8, Host Group ID:
+    local hostName = Osi.GetClosestAlivePlayer(mephitID)
+    Ext.Utils.Print(tostring(hostName))
+    Ext.Utils.Print(Osi.GetCurrentCharacter(0))
+    --Osi.SetCombatGroupID()
+    --Osi.SetCombatGroupAndEnterCombat(hostChar)
+
 end
 
 function PlaceBoxes(item, placements)
@@ -341,3 +368,20 @@ function TeleportCharacter(character, pos)
 		Ext.Utils.Print("Error: Invalid parameters for teleportation.")
 	end
 end
+
+
+function set_creature_hostile(creature_tpl_id,target_t)
+    local host_guid = Osi.GetHostCharacter()
+    local src_faction = Osi.GetFaction(host_guid)
+    Osi.SetFaction(target_t, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+    Osi.SetHostileAndEnterCombat('Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7', '64321d50-d516-b1b2-cfac-2eb773de1ff6', host_guid, creature_tpl_id)
+end
+
+---param target GUIDSTRING
+---param groupID string
+---param enemy GUIDSTRING
+--function Osi.SetCombatGroupAndEnterCombat(target, groupID, enemy) end
+
+---param target GUIDSTRING
+---param groupID string
+--function Osi.SetCombatGroupID(target, groupID) end
