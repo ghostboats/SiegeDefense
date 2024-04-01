@@ -188,6 +188,8 @@ local statue_test = {-300.3968,15.04724,-250.2776}
 
 -- Table to store the current target index for each character
 local characterTargets = {}
+local moveOrAttackState = {}
+
 
 -- Define an array of target positions
 local targetPositions = {
@@ -237,66 +239,76 @@ end)
 
 -- Listener for turn start
 Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
-    
-    -- Initialize target index for new characters
-    if not characterTargets[characterGuid] then
-        characterTargets[characterGuid] = 1
-    end
+    Ext.Utils.Print("Turn has started for character: " .. characterGuid)
 
-    local currentTargetIndex = characterTargets[characterGuid]
-    local entityMovement = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
-    local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
-
-    -- Get the current target position
-    local target = targetPositions[currentTargetIndex]
-
-    -- Here you extract targetX, targetY, and targetZ from the target variable
-    local targetX = target.x
-    local targetY = target.y
-    local targetZ = target.z
-
-    local distanceTo = Osi.GetDistanceToPosition(characterGuid, targetX, targetY, targetZ)
-
-    -- Check if we're close enough to consider the target reached
-    if distanceTo < entityMovement then
-        -- Move to the next target
-        currentTargetIndex = getNextTarget(characterGuid, currentTargetIndex)
-        if currentTargetIndex == nil then
-            return -- All targets reached
+    -- Toggling moveOrAttack state for all entities on the player's turn
+    if string.find(characterGuid, 'Player') then
+        Ext.Utils.Print("Player's turn detected. Toggling moveOrAttack state for all characters.")
+        for guid, state in pairs(moveOrAttackState) do
+            moveOrAttackState[guid] = 1 - state
+            Ext.Utils.Print("Toggled moveOrAttack state for character " .. guid .. " to " .. moveOrAttackState[guid])
         end
-        target = targetPositions[currentTargetIndex]
-        targetX = target.x
-        targetY = target.y
-        targetZ = target.z
     end
 
-    -- Calculate direction vector
-    local directionX = targetX - currentX
-    local directionZ = targetZ - currentZ
-
-    -- Calculate the distance to the target
-    local distanceToTarget = math.sqrt(directionX^2 + directionZ^2)
-
-    -- Check if the distance is greater than the movement range
-    if distanceToTarget > entityMovement then
-        -- Scale the direction vector down to the entity's movement range
-        local scale = entityMovement / distanceToTarget
-        directionX = directionX * scale
-        directionZ = directionZ * scale
-    end
-
-    -- Calculate new position
-    local newX = currentX + directionX
-    local newZ = currentZ + directionZ
-
-    -- Update the target index in the table
-    characterTargets[characterGuid] = currentTargetIndex
-
-    -- Move the entity
+    -- Handling for non-player characters
     if not string.find(characterGuid, 'Player') then
-        Ext.Utils.Print("TurnStarted- " .. characterGuid)
-        Osi.CharacterMoveToPosition(characterGuid, newX, currentY, newZ, '10', "", 1)
-        Osi.Attack(characterGuid,Osi.GetHostCharacter(),1)
+        Ext.Utils.Print("Processing non-player character: " .. characterGuid)
+
+        -- Initialize target index for new characters
+        if not characterTargets[characterGuid] then
+            characterTargets[characterGuid] = 1
+            moveOrAttackState[characterGuid] = 1
+            Ext.Utils.Print("Initialized target index and moveOrAttack state for new character: " .. characterGuid)
+        end
+
+        local currentTargetIndex = characterTargets[characterGuid]
+        Ext.Utils.Print("Current target index for character " .. characterGuid .. ": " .. currentTargetIndex)
+
+        local entityMovement = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
+        local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
+        Ext.Utils.Print("Current position of character " .. characterGuid .. ": (" .. currentX .. ", " .. currentY .. ", " .. currentZ .. ")")
+
+        local target = targetPositions[currentTargetIndex]
+        Ext.Utils.Print("Current target position: (" .. target.x .. ", " .. target.y .. ", " .. target.z .. ")")
+
+        if moveOrAttackState[characterGuid] == 0 then
+            Ext.Utils.Print("Character " .. characterGuid .. " is set to move.")
+            local distanceTo = Osi.GetDistanceToPosition(characterGuid, target.x, target.y, target.z)
+            Ext.Utils.Print("Distance to target: " .. distanceTo)
+
+            if distanceTo < entityMovement then
+                currentTargetIndex = getNextTarget(characterGuid, currentTargetIndex)
+                if currentTargetIndex == nil then
+                    Ext.Utils.Print("All targets reached for character " .. characterGuid)
+                    return
+                end
+                target = targetPositions[currentTargetIndex]
+                Ext.Utils.Print("Next target position: (" .. target.x .. ", " .. target.y .. ", " .. target.z .. ")")
+            end
+
+            local directionX = target.x - currentX
+            local directionZ = target.z - currentZ
+            local distanceToTarget = math.sqrt(directionX^2 + directionZ^2)
+            Ext.Utils.Print("Calculated direction and distance to next target.")
+
+            if distanceToTarget > entityMovement then
+                local scale = entityMovement / distanceToTarget
+                directionX = directionX * scale
+                directionZ = directionZ * scale
+                Ext.Utils.Print("Scaled direction vector due to exceeding movement range.")
+            end
+
+            local newX = currentX + directionX
+            local newZ = currentZ + directionZ
+            Ext.Utils.Print("Calculated new position: (" .. newX .. ", " .. currentY .. ", " .. newZ .. ")")
+            Osi.CharacterMoveToPosition(characterGuid, newX, currentY, newZ, '10', "", 1)
+        else
+            Ext.Utils.Print("Character " .. characterGuid .. " is set to attack. Applying 'StopMove' status.")
+            Osi.ApplyStatus(characterGuid, 'StopMove', 1, 1, characterGuid)
+        end
+
+        characterTargets[characterGuid] = currentTargetIndex
+        Ext.Utils.Print("Updated target index for character " .. characterGuid .. " to " .. currentTargetIndex)
     end
 end)
 
@@ -305,10 +317,12 @@ end)
 -------------------------------------------------------------------------------------------------------------------------------
 -- Function to get the next target position
 function getNextTarget(characterGuid, currentTargetIndex)
+    Ext.Utils.Print("Getting next target for character " .. characterGuid)
     if currentTargetIndex < #targetPositions then
+        Ext.Utils.Print("Next target index for character " .. characterGuid .. " is " .. currentTargetIndex + 1)
         return currentTargetIndex + 1
     else
-        -- Optionally handle the case when all targets are reached
+        Ext.Utils.Print("No more targets left for character " .. characterGuid)
         return nil
     end
 end
@@ -370,7 +384,7 @@ function HandleStartGameMap1(guid)
     --Osi.CharacterMoveToPosition(golemID, 245.22763061523, 17.1201171875, 322.94619750977, '10', "", 1)
     --Osi.CharacterMoveToPosition(mephitID, 245.22763061523, 17.1201171875, 322.94619750977, '10', "", 1)
     --Osi.ProcCharacterMoveTo(mephitID, 246.34733581543, 0, "",1)
-    set_creature_hostile(mephitemplateID,mephitID)
+    --set_creature_hostile(mephitemplateID,mephitID)
     
     local golemFaction = Osi.GetFaction("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255")
     local mephitFaction = Osi.GetFaction("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
