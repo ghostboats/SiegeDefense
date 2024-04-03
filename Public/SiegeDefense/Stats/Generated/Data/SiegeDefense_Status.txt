@@ -1,0 +1,7 @@
+new entry "Ally_Generic"
+type "StatusData"
+data "StatusType" "BOOST"
+data "Boosts" "ActionResourceBlock(Movement)"
+data "DisplayName" "Ally_Generic"
+data "Description" ""
+data "StatusPropertyFlags" "BringIntoCombat;InitiateCombat"

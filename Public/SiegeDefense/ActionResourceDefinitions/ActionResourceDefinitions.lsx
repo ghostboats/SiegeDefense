@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save>
+    <version major="4" minor="4" revision="4" build="444"/>
+    <region id="ActionResourceDefinitions">
+        <node id="root">
+            <children>
+                <node id="ActionResourceDefinition">
+                    <attribute id="Description" type="TranslatedString" handle="h75b6e6bf00514956b45195166f4dee089g5c" version="1"/>
+                    <attribute id="DisplayName" type="TranslatedString" handle="h1f922aea66da4e058ed08882eb5a8a498a02" version="1"/>
+                    <attribute id="MaxLevel" type="uint32" value="0"/>
+                    <attribute id="Name" type="FixedString" value="SiegePoints"/>
+                    <attribute id="ReplenishType" type="FixedString" value="ShortRest"/>
+                    <attribute id="IsSpellResource" type="bool" value="false"/>
+                    <attribute id="ShowOnActionResourcePanel" type="bool" value="true"/>
+                    <attribute id="UUID" type="guid" value="70cf4c21-61a2-4736-8c41-a6e1020c34be"/>
+                </node>
+            </children>
+        </node>
+    </region>
+</save>

@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contentList>
-	<content contentuid="had5437383d9d4216914f08936ca48182981f" version="1">Start Gane Maps</content>
+	<content contentuid="had5437383d9d4216914f08936ca48182981f" version="1">Start Game Maps</content>
     <content contentuid="h61f4dd84f05c4666b8dc3323db237417g743" version="1">Select a map and start the game</content>
-    <content contentuid="h1aa2057c5037462eab2c24f03b00820bf850" version="1">Start Game Generic</content>
-    <content contentuid="hfd903b5e7c004948b703f792e56d35555dac" version="1">Launch generic game start</content>
+    <content contentuid="h1aa2057c5037462eab2c24f03b00820bf850" version="1">Start Game Beta Map</content>
+    <content contentuid="hfd903b5e7c004948b703f792e56d35555dac" version="1">Launch map available only in beta</content>
     <content contentuid="h11105665aa9e44b9b82af735a6b26240eb2a" version="1">Leave tut</content>
-    <content contentuid="hca39455dbb6b4ad7b027d853e14882c8725f" version="1">if in tutorial tp to end</content>
-    <content contentuid="hdbbc8438fd5c4e0cbc4a583b0dc31112e607" version="1">Debug</content>
-    <content contentuid="h0f9ec92153874eed9d462cd417ad33119789" version="1">debug desc</content>
-    <content contentuid="h3c115eb5710d4ce0b6701c1391faf68b2a42" version="1">DESC OF NEW OBJ</content>
-    <content contentuid="ha238f5606fa34544bb3ab130d27a92f09gca" version="1">MY NEW OBJ</content>
+    <content contentuid="hca39455dbb6b4ad7b027d853e14882c8725f" version="1">You should only have this spell if you are in the tutorial. Click to be taken to the transponder and leave the ship. Use the Start Game Maps Spell to start the game only AFTER you leave the ship</content>
+    <content contentuid="hdbbc8438fd5c4e0cbc4a583b0dc31112e607" version="1">Debug_SpawnCrate</content>
+    <content contentuid="h0f9ec92153874eed9d462cd417ad33119789" version="1">Spawn a crate at current location and print location to console.</content>
+    <content contentuid="h3c115eb5710d4ce0b6701c1391faf68b2a42" version="1">DESC OF CRATE OBJECT</content>
+    <content contentuid="ha238f5606fa34544bb3ab130d27a92f09gca" version="1">MY NEW CRATE OBJECT</content>
+    <content contentuid="hcc86e50f1a0849dca852fd3ae1ef6bbac82c" version="1">Custom class with required spells to start siege defense game mode.</content>
+    <content contentuid="hfb7a54cd7c2c4eed8b96c117e20a37e5e3g3" version="1">Siege Defender</content>
+    <content contentuid="hca52949253da40f5abfb160b9527ee982g0f" version="1">description 1</content>
+    <content contentuid="h9365929e8429418191396d30457682b492f5" version="1">description 2</content>
+    <content contentuid="h75b6e6bf00514956b45195166f4dee089g5c" version="1">SiegePoints Description</content>
+    <content contentuid="h1f922aea66da4e058ed08882eb5a8a498a02" version="1">SiegePoints</content>
 </contentList>

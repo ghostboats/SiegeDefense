@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<save>
+  <version major="4" minor="4" revision="4" build="444"/>
+  <region id="Progressions">
+    <node id="root">
+      <children>
+        <node id="Progression">
+          <attribute id="Boosts" type="LSString" value="ActionResource(SpellSlot,2,1);ActionResource(SiegePoints,2,0);ProficiencyBonus(SavingThrow,Dexterity);ProficiencyBonus(SavingThrow,Charisma)"/>
+          <attribute id="Level" type="uint8" value="1"/>
+          <attribute id="Name" type="LSString" value="SiegeDefender"/>
+          <attribute id="PassivesAdded" type="LSString" value="UnlockedSpellSlotLevel1"/>
+          <attribute id="ProgressionType" type="uint8" value="0"/>
+          <attribute id="Selectors" type="LSString" value="AddSpells(eac51d20-1cbd-4a0c-841f-3f2f8d90ec7f,e2e134bf-1e35-4fd9-a656-fccd55d4e888);AddSpells(0786ba69-5a83-4005-a596-bc514bc6f279);SelectAbilityBonus(fc1e0550-953e-4e61-8f33-5637a234d0ca,AbilityBonus,2,1)"/>
+          <attribute id="TableUUID" type="guid" value="d8366869-485c-44e9-86dc-a7e34136dd85"/>
+          <attribute id="UUID" type="guid" value="a3253762-2571-4406-8ab9-3b5db50850fc"/>
+        </node>
+      </children>
+    </node>
+  </region>
+</save>

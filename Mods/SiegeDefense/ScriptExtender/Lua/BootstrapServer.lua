@@ -1,179 +1,10 @@
--- TutorialExit (c) 2023-2024 By SwissFred
---unused listeners
--- LevelGameplayStarted Listener
---Ext.Osiris.RegisterListener("LevelGameplayStarted", 2, "after", function(level, isEditorMode)
---	--Ext.Utils.Print("levelGameplaystarted")	
---	if level ~= "SYS_CC_I" and level == "WLD_Main_A" then -- not in creation and is tutorial level
---		--Ext.Utils.Print(level)
---		if not PersistentVars.ExitShip then 
---			local hostChar = Osi.GetHostCharacter()
---			if not PersistentVars.SpellsGiven then
---				Osi.AddSpell(hostChar, "Start_Game_Maps", 1, 0)
---				PersistentVars.SpellsGiven = true								
---			end	
---		end
---	end
---end)
-
--- CharacterJoinedParty Listener
---Ext.Osiris.RegisterListener("CharacterJoinedParty", 1, "after", function(character)
-	--Ext.Utils.Print(character)
---	local level = Osi.GetRegion(character)
---	if level == "TUT_Avernus_C" then
---		if character == SHADOWHEART then
---			Osi.PROC_TUT_TransformChamber_ShadowheartParty()
---			Osi.PROC_TUT_TransformChamber_ShadowheartWasFreed()			
---			PersistentVars.ShadowheartFreed = true
---		end
---	end
---end)
-
--- Closed Listener
---Ext.Osiris.RegisterListener("Closed", 1, "after", function(itemguid)
---	--Ext.Utils.Print("Closed", itemguid)
---	if itemguid == ELABORATECHESTTEMPLATE then 
---		if Osi.GetVarInteger(ELABORATECHESTTEMPLATE,"CLOSED") ~= 1 then
---			Osi.AddExplorationExperience(Osi.GetHostCharacter(), 300)
---			Osi.SetVarInteger(ELABORATECHESTTEMPLATE,"CLOSED", 1)
---		else
---			Osi.CreateProjectileStrikeAt(ELABORATECHESTTEMPLATE, "Projectile_Greedy")
---			Osi.RequestDelete(ELABORATECHESTTEMPLATE)
---		end
---	end		
---end)
-
--- UseStarted Listener
---Ext.Osiris.RegisterListener("UseStarted", 2, "after", function(character, item )
-	--Ext.Utils.Print("UseStarted",character,item)			
---end)
-
--- DroppedBy Listener
---Ext.Osiris.RegisterListener("DroppedBy", 2, "after", function(itemguid, player) -- dropped
-	--Ext.Utils.Print("dropped")
-	--local template_UUID = GetTemplate(itemguid)
-	--Ext.Utils.Print(itemguid)
-	--Ext.Utils.Print(template_UUID)
-	--Ext.Utils.Print(Osi.GetPosition(itemguid))
---end)
-
--- Moved Listener
---Ext.Osiris.RegisterListener("Moved", 1, "after", function(itemguid) -- Moved
-	--Ext.Utils.Print("Moved")
-	--local template_UUID = GetTemplate(itemguid)
-	--Ext.Utils.Print(itemguid)
-	--Ext.Utils.Print(template_UUID)
-	--Ext.Utils.Print(Osi.GetPosition(itemguid))
---end)
-
--- AddedTo Listener
---Ext.Osiris.RegisterListener("AddedTo", 3, "after", function(object, inventoryHolder, addType)
---	--Ext.Utils.Print(object)
---	if PersistentVars.StarFishItem and string.sub(object, -36) == PersistentVars.StarFishItem then
---		Osi.PlaySound(GetHostCharacter(), "Spell_Impact_Paladin_TurnTheFaithless_L1to3")
---		Osi.TemplateRemoveFrom(STARFISHTEMPLATE, inventoryHolder, 4)
---		local players = Osi.DB_Players:Get(nil)
---		for _, player in pairs(players) do
---			Osi.AddExplorationExperience(player[1], 300)
---		end	
---	end	
---end)
-
--- Opened Listener
---Ext.Osiris.RegisterListener("Opened", 1, "after", function(itemguid)
---	--Ext.Utils.Print("Opened", itemguid)
---	if itemguid == ELABORATECHESTTEMPLATE then 
---		if fxHandle then 
---			Osi.StopLoopEffect(fxHandle)
---		end	
---		if Osi.GetVarInteger(ELABORATECHESTTEMPLATE,"OPENED") ~= 1 then
---			Osi.AddExplorationExperience(Osi.GetHostCharacter(), 300)
---			Osi.SetVarInteger(ELABORATECHESTTEMPLATE,"OPENED", 1)
---		else
---			local message4 = Osi.ResolveTranslatedString(message4Key)
---			Osi.OpenMessageBox(Osi.GetHostCharacter(), message4)							
---		end
---	end		
---end)
-
---unusues variables
---PersistentVars.ExitShip			= false
---PersistentVars.TutorialEnd		= false
---PersistentVars.ShadowheartFreed	= false
---PersistentVars.SpellsGiven		= false
---PersistentVars.StarFishItem		= nil
-
---local SHADOWHEART_POS		= {-2.0206580162048, 17.6171875, -346.88528442383 }
-
---local LEZEL_POS				= {-32.839233398438, 14.87109375, -433.92694091797}
-
---local CONSOLE_POS			= {0.56861913204193, 17.6455078125, -347.91262817383}
-
---local US_POS					= {3.75, 21.451171875, -438.25}
-
--- New Position near Shadowheart
---local ELABORATECHEST_POS		= {-2.3046224117279, 17.610919952393, -346.47982788086}
-
--- New Position near Console ---
---local TUTORIALCHEST_POS		= {-2.8222630023956,  17.607496261597, -347.76953125} 
-
--- Beach where Shadowheart is on the floor
---local BEACH_POS				= {272.21716308594, 1.0546875, 220.50318908691} 
-
--- at the waypoint ruins
---local RUINS_POS				= {281.9306640625, 0.6953125,294.48330688477} 
-
--- Mysterious item near beach Portal
---local STARFISH_POS			= {287.3056640625, 0.92956209182739,  294.06579589844} 
-
--- Waypoint Trigger
---local WAYPOINTBEACH			= "S_CHA_WaypointTrigger_5e857e93-203a-4d4a-bd29-8e97eb34dec6"
---local PORTALRUINS			= "WAYP_CHA_Chapel"
-
---------- Items ---------
---local TRANSPONDER			= "S_TUT_Helm_ControlPanel_bcbba417-6403-40a6-aef6-6785d585df2a"
---local CONSOLERUNE			= "19df3203-a4fb-4513-be14-fe036acffc0e" 
---local GOLDKEY				= "7d5eab5e-4ec0-4b40-8714-f85b2f8c8a0c" 
-
---local DARK_MIND				= "2c5bca7e-8649-4217-9ebb-52b20a506e99"
---local SLAVE_MIND				= "f938e0a4-fb50-4d69-8b40-18e9bba30a22"
---local MANUSCRIPT				= "2e55e20f-2fb4-4a7a-9a0d-78bc61a19ee0"
-
---local TUTORIALCHEST			= "e57e3af6-ae79-4d5c-9d11-f695b359c740" 
---local ELABORATECHEST			= "95dde668-cee0-47c0-92ed-1072db84f687" 
---local ELABORATECHESTTEMPLATE	= "S_TUT_TransformChamber_SharChest_95dde668-cee0-47c0-92ed-1072db84f687"
---local STARFISHTEMPLATE		= "DEC_Harbour_Shell_Starfish_A_3cc28d1f-4279-45df-946c-0b09d934a7c1"
-
--- root templates --
---local FIREGREATSWORD			= "660483f6-8eb3-45be-88a4-327f9d417026" 
---local GOLD_COIN				= "1c3c9c74-34a1-4685-989e-410dc080be6f"
---local SCROLL_FALSELIFE		= "7d76665a-3b9e-4495-a3c6-a05340704194"
---local SCROLL_SPEAKWITHDEAD	= "36d01b98-1702-4d00-81a9-1b8469dd67a5"
---local POTION_HEALING			= "d47006e9-8a51-453d-b200-9e0d42e9bbab"
---local KIT_THIEVESTOOL		= "e32a200c-5b63-414d-ae57-00e7b38f125b"
---local TRAP_DISARM			= "22c74b5e-bef2-41b1-b9ed-f4acc766d4ee"
-
--- characters
---local SHADOWHEART			= "S_Player_ShadowHeart_3ed74f06-3c60-42dc-83f6-f034cb47c679"
---local USDEVOURER				= "S_TUT_Lab_TrappedDevourer_6ca92237-eb1e-4ed8-a1ee-18b3bef21558"
-
--- VFX for playloopEffect
---local VFX_Light_Yellow_Green_01	= "aa29ff85-8912-d0f0-9e6a-186354d7adec"
---local VFX_Light_Mine_Green_01	= "96c29903-0613-cabd-8110-491f4534774d"
-
--- translated strings keys
---local message1Key = "h58240e6cg84ffg4c5bga240g405d65bfbaa1"
---local message2Key = "he200a766geea0g4d4bgaf5egb2262caa204c"
---local message3Key = "h35be50c2g63a1g4a86g840ag34c67b0698ea"
---local message4Key = "h52782fedga1d6g4cf3g91b8g4e3447830689"
-
 PersistentVars = {}
-
-
 
 -------------- Coordinates for Teleport -----------
 local TRANSPONDER_POS		=  {-84.692207336426, 19.01319694519, -387.45742797852}
 
-local MAP_1                 = {220.62478637695,15.830078125,322.23071289062}
+--local MAP_0                 = {220.62478637695,15.830078125,322.23071289062}
+local MAP_0 = {239.58920288086,20.7880859375,320.14974975586}
 
 local BARRICADETEMPLATE		= "d590884d-55a2-4136-9777-531ee7d53f7e"
 
@@ -182,8 +13,6 @@ local CRATE		= "23578669-058f-4318-8e51-87523fc1307f"
 local Crate1 = {220.62478637695,15.830078125,322.23071289062}
 
 local Crate2 = {220.62478637695,15.830078125,317.23071289062}
-
-local statue_test = {-300.3968,15.04724,-250.2776}
 
 
 -- Table to store the current target index for each character
@@ -202,21 +31,22 @@ local targetPositions = {
 -- LevelUnloading Listener
 Ext.Osiris.RegisterListener("LevelUnloading", 1, "after", function(level)
 	if level == "TUT_Avernus_C" then -- tutorial level exit
-		Osi.OpenMessageBox(hostChar, 'leaving tut')
+		Ext.Utils.Print('leaving tut')
 	end		
 end)
 
 -- LevelLoaded Listener
 Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
-	--Ext.Utils.Print("Level Loaded: " .. level)
+	Ext.Utils.Print("Level Loaded: " .. level)
 	local hostChar = Osi.GetHostCharacter()
 	if level == "WLD_Main_A" then
+        Ext.Utils.Print('about to remove spells from host')
 		Osi.RemoveSpell(hostChar, "Start_Game_Leave_Tut", 0)
-		Osi.AddSpell(hostChar, "Start_Game_Maps", 1, 0)
+		--Osi.AddSpell(hostChar, "Start_Game_Maps", 1, 0)
 		Osi.OpenMessageBox(hostChar, "level loaded wld main a")
 	elseif level == "TUT_Avernus_C" then
-		Osi.AddSpell(hostChar, "Start_Game_Leave_Tut", 1, 0)
-		Osi.AddSpell(hostChar, "DEBUG_SHOUT", 1, 0)
+		Osi.AddSpell(hostChar, "Start_Game_Leave_Tut", 1, 0) 
+		--Osi.AddSpell(hostChar, "DEBUG_SHOUT", 1, 0)
 	end
 end)
 
@@ -237,68 +67,76 @@ end)
 
 -- Listener for turn start
 Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
-    
-    -- Initialize target index for new characters
-    if not characterTargets[characterGuid] then
-        characterTargets[characterGuid] = 1
-    end
-
-    local currentTargetIndex = characterTargets[characterGuid]
-    local entityMovement = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
-    local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
-
-    -- Get the current target position
-    local target = targetPositions[currentTargetIndex]
-
-    -- Here you extract targetX, targetY, and targetZ from the target variable
-    local targetX = target.x
-    local targetY = target.y
-    local targetZ = target.z
-
-    local distanceTo = Osi.GetDistanceToPosition(characterGuid, targetX, targetY, targetZ)
-
-    -- Check if we're close enough to consider the target reached
-    if distanceTo < entityMovement then
-        -- Move to the next target
-        currentTargetIndex = getNextTarget(characterGuid, currentTargetIndex)
-        if currentTargetIndex == nil then
-            return -- All targets reached
+    Ext.Utils.Print("Turn has started for character: " .. characterGuid)
+    local factionID = Osi.GetFaction(characterGuid)
+    Ext.Utils.Print("Faction ID for character: " .. factionID)
+    --if characterGuid == 'Goblins_Male_Ranger_3d95ab75-8dcb-d6ea-072a-120eaa16a885' then
+    --    Osi.CharacterMoveToPosition(characterGuid, 228.6, 23.7880859375, 317.19277954102, '10', "", 1)
+    --end
+    if factionID == 'Evil NPC_64321d50-d516-b1b2-cfac-2eb773de1ff6' then
+        -- Initialize target index for new characters
+        if not characterTargets[characterGuid] then
+            characterTargets[characterGuid] = 1
         end
-        target = targetPositions[currentTargetIndex]
-        targetX = target.x
-        targetY = target.y
-        targetZ = target.z
-    end
 
-    -- Calculate direction vector
-    local directionX = targetX - currentX
-    local directionZ = targetZ - currentZ
+        local currentTargetIndex = characterTargets[characterGuid]
+        local entityMovement = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
+        local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
 
-    -- Calculate the distance to the target
-    local distanceToTarget = math.sqrt(directionX^2 + directionZ^2)
+        -- Get the current target position and distance to position
+        local target = targetPositions[currentTargetIndex]
+        local targetX = target.x
+        local targetY = target.y
+        local targetZ = target.z
+        local distanceTo = Osi.GetDistanceToPosition(characterGuid, targetX, targetY, targetZ)
 
-    -- Check if the distance is greater than the movement range
-    if distanceToTarget > entityMovement then
-        -- Scale the direction vector down to the entity's movement range
-        local scale = entityMovement / distanceToTarget
-        directionX = directionX * scale
-        directionZ = directionZ * scale
-    end
+        -- Check if we're close enough to consider the target reached
+        if distanceTo < entityMovement then
+            -- Move to the next target
+            currentTargetIndex = getNextTarget(characterGuid, currentTargetIndex)
+            if currentTargetIndex == nil then
+                return -- All targets reached
+            end
+            target = targetPositions[currentTargetIndex]
+            targetX = target.x
+            targetY = target.y
+            targetZ = target.z
+        end
 
-    -- Calculate new position
-    local newX = currentX + directionX
-    local newZ = currentZ + directionZ
+        -- Calculate direction vector
+        local directionX = targetX - currentX
+        local directionZ = targetZ - currentZ
 
-    -- Update the target index in the table
-    characterTargets[characterGuid] = currentTargetIndex
+        -- Calculate the distance to the target
+        local distanceToTarget = math.sqrt(directionX^2 + directionZ^2)
 
-    -- Move the entity
-    if not string.find(characterGuid, 'Player') then
-        Ext.Utils.Print("TurnStarted- " .. characterGuid)
+        -- Check if the distance is greater than the movement range
+        if distanceToTarget > entityMovement then
+            -- Scale the direction vector down to the entity's movement range
+            local scale = entityMovement / distanceToTarget
+            directionX = directionX * scale
+            directionZ = directionZ * scale
+        end
+
+        -- Calculate new position
+        local newX = currentX + directionX
+        local newZ = currentZ + directionZ
+
+        -- Update the target index in the table
+        characterTargets[characterGuid] = currentTargetIndex
+
+        -- Move the entity
         Osi.CharacterMoveToPosition(characterGuid, newX, currentY, newZ, '10', "", 1)
-        Osi.Attack(characterGuid,Osi.GetHostCharacter(),1)
+        local closestPlayer = Osi.GetClosestPlayer(characterGuid)
+        Ext.Utils.Print("Closest Player To Current Turn Taker: " .. tostring(closestPlayer))
+        Ext.Utils.Print(Osi.GetHostCharacter())
+        Osi.Attack(characterGuid, closestPlayer, 1)
+
+    elseif not string.find(characterGuid, 'Player') then
+        Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
     end
 end)
+
 
 
 ------------------ functions --------------------------------------------------------------------------------------------------
@@ -334,10 +172,9 @@ end
 -- Function to handle startgame status
 function HandleStartGameMap1(guid)
     local hostChar = Osi.GetHostCharacter()
-    TeleportCharacter(guid, MAP_1)
-    Osi.OpenMessageBox(hostChar, 'moving to game location')
+    TeleportCharacter(guid, MAP_0)
 
-    local x, y, z = Osi.GetPosition(hostChar)
+    local x, y, z = Crate1[1], Crate1[2], Crate1[3]
     new_item = Osi.CreateAt(CRATE, x, y, z, 0, 1, "")
     local combinedString = "initial: " .. tostring(x) .. ", " .. tostring(y) .. ", " .. tostring(z)
     Ext.Utils.Print(combinedString)
@@ -365,11 +202,18 @@ function HandleStartGameMap1(guid)
 
     --local golemID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), 223.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
     local mephitemplateID = Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
+    local goblinTemplateID = Osi.GetTemplate("S_CAMP_PartyGoblin_004_2fed2230-f4b2-4ac2-9400-e4866072ff99")
+    local yennaTemplateID = Osi.GetTemplate("be212ed5-a622-4560-96be-0ee27ea1f913")
     local mephitID = CreateAt(mephitemplateID, 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    local goblinID = CreateAt(goblinTemplateID, 228.58090209961, 23.7880859375, 317.19277954102, 0,0,"")
+    local yennaID = CreateAt(yennaTemplateID, 223.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    --local test = Osi.CanShowSpellForCharacter(goblinID, 'Target_Healer_Heal')
+    --Ext.Utils.Print('test:' .. tostring(test))
+    --local tx, ty, tz = Osi.GetPosition(goblinID)
+    --Osi.UseSpell(goblinID, 'Target_Healer_Heal', goblinID)
+    Osi.UseSpellAtPosition(goblinID, 'Debug_MistyStep', 228.58090209961, 22.7880859375, 317.19277954102)
+    Osi.SetFaction(goblinID, '6545a015-1b3d-66a4-6a0e-6ec62065cdb7')
     Ext.Utils.Print('mephit location' .. tostring(Osi.GetPosition(mephitID)))
-    --Osi.CharacterMoveToPosition(golemID, 245.22763061523, 17.1201171875, 322.94619750977, '10', "", 1)
-    --Osi.CharacterMoveToPosition(mephitID, 245.22763061523, 17.1201171875, 322.94619750977, '10', "", 1)
-    --Osi.ProcCharacterMoveTo(mephitID, 246.34733581543, 0, "",1)
     set_creature_hostile(mephitemplateID,mephitID)
     
     local golemFaction = Osi.GetFaction("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255")
@@ -378,22 +222,12 @@ function HandleStartGameMap1(guid)
     local factionString = "Golem Faction: " .. tostring(golemFaction) .. ", Mephit Faction: " .. tostring(mephitFaction) .. ", Host Faction: " .. tostring(hostFaction)
     Ext.Utils.Print(factionString)
     --Golem Faction: Act1_UND_KethericCity_Golem_40a90873-e3f0-478c-99f9-11e71f068f55, Mephit Faction: Act1_HAG_WoodWoad_5b02a4d5-fdca-428d-a19d-dbc73e0bd777, Host Faction: Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7
-    --Osi.SetHostileAndEnterCombat()("Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7","Act1_HAG_WoodWoad_5b02a4d5-fdca-428d-a19d-dbc73e0bd777")
-    --Osi.ForceTurnBasedMode(hostChar, 1) i think nope
-    --Osi.EnterCombat(hostChar,mephitID) nope
-    --Osi.SetHostileAndEnterCombat("Act1_HAG_WoodWoad_5b02a4d5-fdca-428d-a19d-dbc73e0bd777","Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7", mephitID, hostChar) nope
     local golemGroupID = Osi.GetCombatGroupID("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255")
     local mephitGroupID = Osi.GetCombatGroupID("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
     local hostGroupID = Osi.GetCombatGroupID("Player1_169d0520-1eb0-f576-d819-74850d49eaaa")
     local groupIDString = "Golem Group ID: " .. tostring(golemGroupID) .. ", Mephit Group ID: " .. tostring(mephitGroupID) .. ", Host Group ID: " .. tostring(hostGroupID)
     Ext.Utils.Print(groupIDString)
     --Golem Group ID: a78e643e-ecdb-3d86-7e62-8a2eaf7c8a6f, Mephit Group ID: 8a17e0b6-fc74-5603-5e4a-139a1bbd7ac8, Host Group ID:
-    local hostName = Osi.GetClosestAlivePlayer(mephitID)
-    Ext.Utils.Print(tostring(hostName))
-    Ext.Utils.Print(Osi.GetCurrentCharacter(0))
-    --Osi.SetCombatGroupID()
-    --Osi.SetCombatGroupAndEnterCombat(hostChar)
-
 end
 
 function PlaceBoxes(item, placements)
@@ -463,19 +297,10 @@ function TeleportCharacter(character, pos)
 	end
 end
 
-
 function set_creature_hostile(creature_tpl_id,target_t)
     local host_guid = Osi.GetHostCharacter()
     local src_faction = Osi.GetFaction(host_guid)
     Osi.SetFaction(target_t, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+    --Osi.SetHostileAndEnterCombat('Neutral NPC_cfb709b3-220f-9682-bcfb-6f0d8837462e', '64321d50-d516-b1b2-cfac-2eb773de1ff6', host_guid, creature_tpl_id)
     Osi.SetHostileAndEnterCombat('Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7', '64321d50-d516-b1b2-cfac-2eb773de1ff6', host_guid, creature_tpl_id)
 end
-
----param target GUIDSTRING
----param groupID string
----param enemy GUIDSTRING
---function Osi.SetCombatGroupAndEnterCombat(target, groupID, enemy) end
-
----param target GUIDSTRING
----param groupID string
---function Osi.SetCombatGroupID(target, groupID) end
