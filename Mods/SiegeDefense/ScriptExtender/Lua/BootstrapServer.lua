@@ -133,6 +133,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
     elseif string.find(characterGuid, 'Player') then
+        --Osi.RemoveStatus(Osi.GetHostCharacter(), 'LoseLive')
         turnCount = turnCount + 1
     end
 end)
@@ -157,7 +158,7 @@ Ext.Osiris.RegisterListener("TurnEnded", 1, "before", function(characterGuid)
         if distanceTo < 4 then
             Ext.Utils.Print('in range, lowerinf lives')
             Osi.ApplyStatus(Osi.GetHostCharacter(), 'LoseLive', 10, 1, Osi.GetHostCharacter())
-            Osi.ApplyStatus(Osi.GetHostCharacter(), 'LoseLivee', 10, 1, Osi.GetHostCharacter())
+            Osi.RemoveStatus(Osi.GetHostCharacter(), 'LoseLive')
             --Osi.PartyIncreaseActionResourceValue(Osi.GetHostCharacter(), 'Lives', 1)
         end
     end
