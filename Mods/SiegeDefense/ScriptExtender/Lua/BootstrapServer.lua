@@ -2,7 +2,7 @@ PersistentVars = {}
 local turnCount = 0
 -------------- Coordinates and uuids -----------
 local TRANSPONDER_POS = {-84.692207336426, 19.01319694519, -387.45742797852}
-local MAP_0 = {239.58920288086,20.7880859375,320.14974975586}
+local MAP_0 = {224.95590209961,16.6357421875,324.15930175781}
 local Crate1 = {220.62478637695,15.830078125,322.23071289062}
 local Crate2 = {220.62478637695,15.830078125,317.23071289062}
 local CRATE = "23578669-058f-4318-8e51-87523fc1307f"
@@ -133,7 +133,6 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
     elseif string.find(characterGuid, 'Player') then
-        --Osi.RemoveStatus(Osi.GetHostCharacter(), 'LoseLive')
         turnCount = turnCount + 1
     end
 end)
@@ -157,10 +156,12 @@ Ext.Osiris.RegisterListener("TurnEnded", 1, "before", function(characterGuid)
         -- Check if we're close enough to consider the target reached
         if distanceTo < 4 then
             Ext.Utils.Print('in range, lowerinf lives')
-            Osi.ApplyStatus(Osi.GetHostCharacter(), 'LoseLive', 10, 1, Osi.GetHostCharacter())
-            Osi.RemoveStatus(Osi.GetHostCharacter(), 'LoseLive')
-            --Osi.PartyIncreaseActionResourceValue(Osi.GetHostCharacter(), 'Lives', 1)
+            Osi.ApplyStatus(Osi.GetHostCharacter(), 'LoseLives', 10, 0, Osi.GetHostCharacter())
+            --Osi.PartyIncreaseActionResourceValue(Osi.GetHostCharacter(), 'Lives', -1)
         end
+    elseif string.find(characterGuid, 'Player') then
+        Ext.Utils.Print('fsdfsdf')
+        --Osi.RemoveStatus(characterGuid, 'LoseLives')
     end
 end)
 
