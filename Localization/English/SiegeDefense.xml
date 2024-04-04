@@ -2,8 +2,8 @@
 <contentList>
 	<content contentuid="had5437383d9d4216914f08936ca48182981f" version="1">Start Game Maps</content>
     <content contentuid="h61f4dd84f05c4666b8dc3323db237417g743" version="1">Select a map and start the game</content>
-    <content contentuid="h1aa2057c5037462eab2c24f03b00820bf850" version="1">Start Game Beta Map</content>
-    <content contentuid="hfd903b5e7c004948b703f792e56d35555dac" version="1">Launch map available only in beta</content>
+    <content contentuid="h1aa2057c5037462eab2c24f03b00820bf850" version="1">Start Game Map0</content>
+    <content contentuid="hfd903b5e7c004948b703f792e56d35555dac" version="1">Map0 is an initial map I set as my first location. I use it for testing and junk.</content>
     <content contentuid="h11105665aa9e44b9b82af735a6b26240eb2a" version="1">Leave tut</content>
     <content contentuid="hca39455dbb6b4ad7b027d853e14882c8725f" version="1">You should only have this spell if you are in the tutorial. Click to be taken to the transponder and leave the ship. Use the Start Game Maps Spell to start the game only AFTER you leave the ship</content>
     <content contentuid="hdbbc8438fd5c4e0cbc4a583b0dc31112e607" version="1">Debug_SpawnCrate</content>
@@ -14,6 +14,10 @@
     <content contentuid="hfb7a54cd7c2c4eed8b96c117e20a37e5e3g3" version="1">Siege Defender</content>
     <content contentuid="hca52949253da40f5abfb160b9527ee982g0f" version="1">description 1</content>
     <content contentuid="h9365929e8429418191396d30457682b492f5" version="1">description 2</content>
-    <content contentuid="h75b6e6bf00514956b45195166f4dee089g5c" version="1">SiegePoints Description</content>
+    <content contentuid="h75b6e6bf00514956b45195166f4dee089g5c" version="1">SiegePoints are used as currency. From upgrading/buying units to adding modifiers, siegepoints handles it all. Collect more points mainly from mobs.</content>
     <content contentuid="h1f922aea66da4e058ed08882eb5a8a498a02" version="1">SiegePoints</content>
+    <content contentuid="h74d0d0ec3b9143cda6c47c7805fc81167059" version="1">Your current lives. Drops each time an entity reachs the end of the map.</content>
+    <content contentuid="h49eb32bc255f4b308b380487e979deea8964" version="1">Lives</content>
+    <content contentuid="h0ccf798745fb4180bc49965e540d4b2334c8" version="1">Lose Lives</content>
+    <content contentuid="heb619ed1d85f4d6a8c835d76fb8cb16327g5" version="1">An enemy reached the end of the map and cost you a life.</content>
 </contentList>

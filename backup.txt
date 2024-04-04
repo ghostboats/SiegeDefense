@@ -493,3 +493,52 @@ end
 ---param target GUIDSTRING
 ---param groupID string
 --function Osi.SetCombatGroupID(target, groupID) end
+
+
+
+
+
+
+
+
+    --local golemID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), 223.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    --local mephitemplateID = Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
+    --local goblinTemplateID = Osi.GetTemplate("S_CAMP_PartyGoblin_004_2fed2230-f4b2-4ac2-9400-e4866072ff99")
+    --local portalTemplateID = Osi.GetTemplate("TOOL_GTY_Portal_B_Complete_A_73496b17-afc6-49fb-84f5-28f9052f518d")
+    --local mephitID = CreateAt(mephitemplateID, 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    --local goblinID = CreateAt(goblinTemplateID, 228.58090209961, 23.7880859375, 317.19277954102, 0,0,"")
+    --local portalID = CreateAt("73496b17-afc6-49fb-84f5-28f9052f518d", 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    --local test = Osi.CanShowSpellForCharacter(goblinID, 'Target_Healer_Heal')
+    --Ext.Utils.Print('test:' .. tostring(test))
+    --local tx, ty, tz = Osi.GetPosition(goblinID)
+    --Osi.UseSpell(goblinID, 'Target_Healer_Heal', goblinID)
+    --Osi.UseSpellAtPosition(goblinID, 'Debug_MistyStep', 228.58090209961, 22.7880859375, 317.19277954102)
+    --Osi.SetFaction(goblinID, '6545a015-1b3d-66a4-6a0e-6ec62065cdb7')
+    --Ext.Utils.Print('mephit location' .. tostring(Osi.GetPosition(mephitID)))
+    --et_creature_hostile(mephitemplateID,mephitID)
+    --Osi.SetFaction(mephitID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+    --Osi.SetHostileAndEnterCombat('Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7', '64321d50-d516-b1b2-cfac-2eb773de1ff6', hostChar, rabbitID)
+
+
+
+        local golemFaction = Osi.GetFaction("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255")
+    local mephitFaction = Osi.GetFaction("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
+    local hostFaction = Osi.GetFaction(hostChar)
+    local factionString = "Golem Faction: " .. tostring(golemFaction) .. ", Mephit Faction: " .. tostring(mephitFaction) .. ", Host Faction: " .. tostring(hostFaction)
+    Ext.Utils.Print(factionString)
+    --Golem Faction: Act1_UND_KethericCity_Golem_40a90873-e3f0-478c-99f9-11e71f068f55, Mephit Faction: Act1_HAG_WoodWoad_5b02a4d5-fdca-428d-a19d-dbc73e0bd777, Host Faction: Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7
+    local golemGroupID = Osi.GetCombatGroupID("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255")
+    local mephitGroupID = Osi.GetCombatGroupID("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794")
+    local hostGroupID = Osi.GetCombatGroupID("Player1_169d0520-1eb0-f576-d819-74850d49eaaa")
+    local groupIDString = "Golem Group ID: " .. tostring(golemGroupID) .. ", Mephit Group ID: " .. tostring(mephitGroupID) .. ", Host Group ID: " .. tostring(hostGroupID)
+    Ext.Utils.Print(groupIDString)
+    --Golem Group ID: a78e643e-ecdb-3d86-7e62-8a2eaf7c8a6f, Mephit Group ID: 8a17e0b6-fc74-5603-5e4a-139a1bbd7ac8, Host Group ID:
+
+
+    function set_creature_hostile(creature_tpl_id,target_t)
+    local host_guid = Osi.GetHostCharacter()
+    local src_faction = Osi.GetFaction(host_guid)
+    Osi.SetFaction(target_t, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+    --Osi.SetHostileAndEnterCombat('Neutral NPC_cfb709b3-220f-9682-bcfb-6f0d8837462e', '64321d50-d516-b1b2-cfac-2eb773de1ff6', host_guid, creature_tpl_id)
+    Osi.SetHostileAndEnterCombat('Hero Player1_6545a015-1b3d-66a4-6a0e-6ec62065cdb7', '64321d50-d516-b1b2-cfac-2eb773de1ff6', host_guid, creature_tpl_id)
+end

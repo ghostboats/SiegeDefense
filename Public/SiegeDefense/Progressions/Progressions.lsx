@@ -5,7 +5,7 @@
     <node id="root">
       <children>
         <node id="Progression">
-          <attribute id="Boosts" type="LSString" value="ActionResource(SpellSlot,2,1);ActionResource(SiegePoints,2,0);ProficiencyBonus(SavingThrow,Dexterity);ProficiencyBonus(SavingThrow,Charisma)"/>
+          <attribute id="Boosts" type="LSString" value="ActionResource(SpellSlot,2,1);ActionResource(SiegePoints,5,0);ActionResource(Lives,10,0);ProficiencyBonus(SavingThrow,Dexterity);ProficiencyBonus(SavingThrow,Charisma)"/>
           <attribute id="Level" type="uint8" value="1"/>
           <attribute id="Name" type="LSString" value="SiegeDefender"/>
           <attribute id="PassivesAdded" type="LSString" value="UnlockedSpellSlotLevel1"/>

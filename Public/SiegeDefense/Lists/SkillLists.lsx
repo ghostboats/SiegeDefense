@@ -6,7 +6,7 @@
       <children>
         <node id="SkillList">
           <attribute id="Skills" type="LSString" value="Athletics, Acrobatics, Arcana, SleightOfHand, Perception"/>
-          <attribute id="UUID" type="guid" value="30dea46e-feae-4637-85ce-d4cc7a5ae256"/>
+          <attribute id="UUID" type="guid" value="81ba4f0d-9c50-4c89-bbe3-cf6adb51b74a"/>
         </node>
       </children>
     </node>

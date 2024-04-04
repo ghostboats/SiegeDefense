@@ -5,7 +5,7 @@
     <node id="root">
       <children>
         <node id="ClassDescription">
-          <attribute id="BaseHp" type="int32" value="15"/>
+          <attribute id="BaseHp" type="int32" value="40"/>
           <attribute id="CharacterCreationPose" type="guid" value="0f07ec6e-4ef0-434e-9a51-1353260ccff8"/>
           <attribute id="Description" type="TranslatedString" handle="hcc86e50f1a0849dca852fd3ae1ef6bbac82c" version="1"/>
           <attribute id="DisplayName" type="TranslatedString" handle="hfb7a54cd7c2c4eed8b96c117e20a37e5e3g3" version="1"/>

@@ -9,10 +9,20 @@
                     <attribute id="DisplayName" type="TranslatedString" handle="h1f922aea66da4e058ed08882eb5a8a498a02" version="1"/>
                     <attribute id="MaxLevel" type="uint32" value="0"/>
                     <attribute id="Name" type="FixedString" value="SiegePoints"/>
-                    <attribute id="ReplenishType" type="FixedString" value="ShortRest"/>
+                    <attribute id="ReplenishType" type="FixedString" value="LongRest"/>
                     <attribute id="IsSpellResource" type="bool" value="false"/>
                     <attribute id="ShowOnActionResourcePanel" type="bool" value="true"/>
                     <attribute id="UUID" type="guid" value="70cf4c21-61a2-4736-8c41-a6e1020c34be"/>
+                </node>
+                <node id="ActionResourceDefinition">
+                    <attribute id="Description" type="TranslatedString" handle="h74d0d0ec3b9143cda6c47c7805fc81167059" version="1"/>
+                    <attribute id="DisplayName" type="TranslatedString" handle="h49eb32bc255f4b308b380487e979deea8964" version="1"/>
+                    <attribute id="MaxLevel" type="uint32" value="0"/>
+                    <attribute id="Name" type="FixedString" value="Lives"/>
+                    <attribute id="ReplenishType" type="FixedString" value="LongRest"/>
+                    <attribute id="IsSpellResource" type="bool" value="false"/>
+                    <attribute id="ShowOnActionResourcePanel" type="bool" value="true"/>
+                    <attribute id="UUID" type="guid" value="90856a8b-3ba7-4302-bc05-c5a13fa368f8"/>
                 </node>
             </children>
         </node>
