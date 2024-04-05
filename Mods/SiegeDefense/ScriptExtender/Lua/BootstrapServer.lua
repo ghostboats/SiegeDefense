@@ -1,34 +1,19 @@
-PersistentVars = {}
-local turnCount = 0
--------------- Coordinates and uuids -----------
-local TRANSPONDER_POS = {-84.692207336426, 19.01319694519, -387.45742797852}
-local MAP_0 = {224.95590209961,16.6357421875,324.15930175781}
-local Crate1 = {220.62478637695,15.830078125,322.23071289062}
-local Crate2 = {220.62478637695,15.830078125,317.23071289062}
-local CRATE = "23578669-058f-4318-8e51-87523fc1307f"
-
 -- Table to store the current target index for each character
 local characterTargets = {}
-
--- Define an array of target positions
-local targetPositions = {
-    {x = 226.49760437012, y = 16.8076171875, z = 319.62942504883},
-    {x = 226.82446289062, y = 16.294921875, z = 314.53106689453},
-    {x = 236.56643676758, y = 17.2421875, z = 314.7282409668},
-    {x = 237.89315795898, y = 17.375, z = 322.44702148438},
-    {x = 250.27450561523, y = 16.79296875, z = 322.64022827148}
-}
-
+local turnCount = 0
+local siegePoints = 5
+local mapConfig0 = Ext.Require('Maps/Map0.lua')
+Ext.Utils.Print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+Ext.Utils.Print(mapConfig0)
 -- LevelLoaded Listener
 Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
 	Ext.Utils.Print("Level Loaded: " .. level)
-	local hostChar = Osi.GetHostCharacter()
 	if level == "WLD_Main_A" then
         Ext.Utils.Print('about to remove spells from host')
-		Osi.RemoveSpell(hostChar, "Start_Game_Leave_Tut", 0)
-		Osi.OpenMessageBox(hostChar, "level loaded wld main a")
+		Osi.RemoveSpell(Osi.GetHostCharacter(), "Start_Game_Leave_Tut", 0)
+		Osi.OpenMessageBox(Osi.GetHostCharacter(), "level loaded wld main a")
 	elseif level == "TUT_Avernus_C" then
-		Osi.AddSpell(hostChar, "Start_Game_Leave_Tut", 1, 0) 
+		Osi.AddSpell(Osi.GetHostCharacter(), "Start_Game_Leave_Tut", 1, 0) 
 	end
 end)
 
@@ -36,19 +21,26 @@ end)
 Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
 	Ext.Utils.Print('Status applied: '.. status)
     if status == "Spawn_Ally_Status" then
-        Ext.Utils.Print('Entity has status for spawn ally')
+        --Ext.Utils.Print('Entity has status for spawn ally')
         local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
+        Osi.RemovePassive(guid, "DeathRewards")
         Osi.Die(guid)
         local goblinTemplateID = Osi.GetTemplate("S_CAMP_PartyGoblin_004_2fed2230-f4b2-4ac2-9400-e4866072ff99")
         local goblinID = CreateAt(goblinTemplateID, spawnX, spawnY + 3, spawnZ, 0,0,"")
+        siegePoints = siegePoints - 1
         Osi.SetFaction(goblinID, '6545a015-1b3d-66a4-6a0e-6ec62065cdb7')
 	elseif status == "Map0" then
-		HandleStartGameMap0(guid)
+        HandleStartGameMap(guid, mapConfig0)
 	elseif status == "LeaveTut" then
-		TeleportCharacter(guid, TRANSPONDER_POS)
+		TeleportCharacter(guid, {-84.692207336426, 19.01319694519, -387.45742797852})
 	elseif status == "DEBUG" then
 		HandleDebug(guid)
+    elseif status == "DYING" then
+        if Osi.HasPassive(guid, 'DeathRewards') == 1 then
+            siegePoints = siegePoints + 1
+        end
 	end
+    Ext.Utils.Print('Siege Points: '.. tostring(siegePoints))
 end)
 
 -- Listener for turn start
@@ -82,7 +74,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
         local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
 
         -- Get the current target position and distance to position
-        local target = targetPositions[currentTargetIndex]
+        local target = mapConfig0.targetPositions[currentTargetIndex]
         local targetX = target.x
         local targetY = target.y
         local targetZ = target.z
@@ -93,9 +85,10 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
             -- Move to the next target
             currentTargetIndex = getNextTarget(characterGuid, currentTargetIndex)
             if currentTargetIndex == nil then
+                Osi.Die(characterGuid)
                 return -- All targets reached
             end
-            target = targetPositions[currentTargetIndex]
+            target = mapConfig0.targetPositions[currentTargetIndex]
             targetX = target.x
             targetY = target.y
             targetZ = target.z
@@ -125,10 +118,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
 
         -- Move the entity
         Osi.CharacterMoveToPosition(characterGuid, newX, currentY, newZ, '10', "", 1)
-        local closestPlayer = Osi.GetClosestPlayer(characterGuid)
-        Ext.Utils.Print("Closest Player To Current Turn Taker: " .. tostring(closestPlayer))
-        Ext.Utils.Print(Osi.GetHostCharacter())
-        Osi.Attack(characterGuid, closestPlayer, 1)
+        Osi.Attack(characterGuid, Osi.GetHostCharacter(), 1)
 
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
@@ -138,24 +128,21 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
 end)
 
 
-
 ------------------ functions ------------------------
-
 -- Function to get the next target position
 function getNextTarget(characterGuid, currentTargetIndex)
-    if currentTargetIndex < #targetPositions then
+    if currentTargetIndex < #mapConfig0.targetPositions then
         return currentTargetIndex + 1
     else
         -- When final dest os reacjed
+        Osi.RemovePassive(characterGuid, "DeathRewards")
         Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
-        Osi.Die(characterGuid)
         return nil
     end
 end
 
 -- Function to handle debug
 function HandleDebug(guid)
-    --Osi.PartyIncreaseActionResourceValue(guid, 'Lives', 1)
     local x, y, z = Osi.GetPosition(guid)
     Osi.UseSpellAtPosition(guid, 'Target_Re', x,y,z)
     local crate = "{" .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z) .. "}"
@@ -164,39 +151,23 @@ function HandleDebug(guid)
 end
 
 -- Function to handle startgame status
-function HandleStartGameMap0(guid)
-    TeleportCharacter(guid, MAP_0)
-    local lx, ly, lz = Crate1[1], Crate1[2], Crate1[3]
+function HandleStartGameMap(guid, mapConfig)
+    TeleportCharacter(guid, mapConfig.MAP_0)
+    local lx, ly, lz = mapConfig.Crate1[1], mapConfig.Crate1[2], mapConfig.Crate1[3]
     squirrelID = Osi.CreateAt(Osi.GetTemplate("S_DEN_Squirrel_35ed8eab-1e0b-4ec8-92f2-1b8510cb3ad8"), lx, ly, lz, 0, 1, "")
-    --Osi.SetFaction(squirrelID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
-    new_item_left = Osi.CreateAt(CRATE, lx, ly, lz, 0, 1, "")
+    new_item_left = Osi.CreateAt(mapConfig.CRATE, lx, ly, lz, 0, 1, "")
+    last_item_left = PlaceBoxes(new_item_left, mapConfig.placements_left, mapConfig)
 
-    -- Placing boxes with multiple directions and distances
-    local placements = {
-        {direction = 'east', distance = 8, height = 5},
-        {direction = 'south', distance = 5, height = 5},
-        {direction = 'east', distance = 6, height = 5},
-        {direction = 'north', distance = 8, height = 5},
-        {direction = 'east', distance = 9, height = 5},
-    }
-    last_item_left = PlaceBoxes(new_item_left, placements)
-
-    local rx, ry, rz = Crate2[1], Crate2[2], Crate2[3]
-    new_item_right = Osi.CreateAt(CRATE, rx, ry, rz, 0, 1, "")
-    placements = {
-        {direction = 'east', distance = 3, height = 5},
-        {direction = 'south', distance = 5, height = 5},
-        {direction = 'east', distance = 16, height = 5},
-        {direction = 'north', distance = 8, height = 5},
-        {direction = 'east', distance = 4, height = 5},
-    }
-    last_item_right = PlaceBoxes(new_item_right, placements)
+    local rx, ry, rz = mapConfig.Crate2[1], mapConfig.Crate2[2], mapConfig.Crate2[3]
+    new_item_right = Osi.CreateAt(mapConfig.CRATE, rx, ry, rz, 0, 1, "")
+    last_item_right = PlaceBoxes(new_item_right, mapConfig.placements_right, mapConfig)
 
     local mephitID = CreateAt(Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
     Osi.SetFaction(mephitID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+    Ext.Utils.Print("mapConfig0 at hadnlestartgamemap end: ", tostring(mapConfig0))
 end
 
-function PlaceBoxes(item, placements)
+function PlaceBoxes(item, placements, mapConfig)
     local new_item = item
     local last_first_row_item = nil  -- Variable to store the last item of the first row
     local x, y, z = Osi.GetPosition(new_item)
@@ -209,13 +180,13 @@ function PlaceBoxes(item, placements)
         for current_height = 0, height - 1 do
             for current_distance = 1, distance do
                 if direction == 'north' then
-                    new_item = Osi.CreateAt(CRATE, x, y + current_height, z + current_distance, 0, 1, "")
+                    new_item = Osi.CreateAt(mapConfig.CRATE, x, y + current_height, z + current_distance, 0, 1, "")
                 elseif direction == 'east' then
-                    new_item = Osi.CreateAt(CRATE, x + current_distance, y + current_height, z, 0, 1, "")
+                    new_item = Osi.CreateAt(mapConfig.CRATE, x + current_distance, y + current_height, z, 0, 1, "")
                 elseif direction == 'south' then
-                    new_item = Osi.CreateAt(CRATE, x, y + current_height, z - current_distance, 0, 1, "")
+                    new_item = Osi.CreateAt(mapConfig.CRATE, x, y + current_height, z - current_distance, 0, 1, "")
                 elseif direction == 'west' then
-                    new_item = Osi.CreateAt(CRATE, x - current_distance, y + current_height, z, 0, 1, "")
+                    new_item = Osi.CreateAt(mapConfig.CRATE, x - current_distance, y + current_height, z, 0, 1, "")
                 end
 
                 -- Storing the last item of the first row

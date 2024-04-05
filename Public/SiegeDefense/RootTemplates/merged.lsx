@@ -13,7 +13,7 @@
 					<attribute id="LevelName" type="FixedString" value="WLD_Main_A" />
 					<attribute id="MapKey" type="FixedString" value="2fed2230-f4b2-4ac2-9400-e4866072ff99" />
 					<attribute id="Name" type="LSString" value="S_CAMP_PartyGoblin_004" />
-					<attribute id="SwarmGroup" type="FixedString" value="CAMP_PartyGoblin_Ranged" />
+					<attribute id="Stats" type="FixedString" value="Goblin_Ranger" />
 					<attribute id="TemplateName" type="FixedString" value="bdf828ab-4335-4626-b159-312b67397011" />
 					<attribute id="Type" type="FixedString" value="character" />
 					<attribute id="_OriginalFileVersion_" type="int64" value="144115207403209024" />

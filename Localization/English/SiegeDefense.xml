@@ -20,4 +20,10 @@
     <content contentuid="h49eb32bc255f4b308b380487e979deea8964" version="1">Lives</content>
     <content contentuid="h0ccf798745fb4180bc49965e540d4b2334c8" version="1">Lose Lives</content>
     <content contentuid="heb619ed1d85f4d6a8c835d76fb8cb16327g5" version="1">An enemy reached the end of the map and cost you a life.</content>
+    <content contentuid="h7f86b1a109ce4f46b6660ad63c74d677ce3c" version="1">DeathRewards</content>
+    <content contentuid="h1fd67ac1a3de403f90275825c1a91f535c03" version="1">Gives one siege point on death</content>
+    <content contentuid="hc34c63ca2b6f4123bfec7b36d9942fbe2f54" version="1">Gives one siege point on death</content>
+    <content contentuid="h9fd9160a9c7c440cb25277c26aea56a68gbf" version="1">Death Rewards</content>
+    <content contentuid="h0e63d0d662e54f5780932e8ec11cdfb0b52c" version="1">Something about spawning</content>
+    <content contentuid="h669327ca70df4403a98c946b726b580ae4g9" version="1">Spawning</content>
 </contentList>

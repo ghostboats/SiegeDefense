@@ -1,0 +1,6 @@
+new entry "DeathRewards"
+type "PassiveData"
+data "DisplayName" "h7f86b1a109ce4f46b6660ad63c74d677ce3c"
+data "Description" "h1fd67ac1a3de403f90275825c1a91f535c03"
+data "Properties" "Highlighted"
+data "Boosts" "ApplyStatus(Death_Rewards_Status,100,-1)"
