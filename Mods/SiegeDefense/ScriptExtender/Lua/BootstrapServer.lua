@@ -137,33 +137,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     end
 end)
 
-Ext.Osiris.RegisterListener("TurnEnded", 1, "before", function(characterGuid)
-    Ext.Utils.Print("Turn has ENDED for character: " .. characterGuid)
-    local factionID = Osi.GetFaction(characterGuid)
-    Ext.Utils.Print("Faction ID for character: " .. factionID)
-    if factionID == 'Evil NPC_64321d50-d516-b1b2-cfac-2eb773de1ff6' then
-        local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
 
-        local lastTarget = targetPositions[#targetPositions]
-
-        -- Get the current target position and distance to position
-        local lastTarget = targetPositions[#targetPositions]
-        local lastTargetX = lastTarget.x
-        local lastTargetY = lastTarget.y
-        local lastTargetZ = lastTarget.z
-        local distanceTo = Osi.GetDistanceToPosition(characterGuid, lastTargetX, lastTargetY, lastTargetZ)
-        Ext.Utils.Print("distance to: " .. tostring(distanceTo))
-        -- Check if we're close enough to consider the target reached
-        if distanceTo < 4 then
-            Ext.Utils.Print('in range, lowerinf lives')
-            Osi.ApplyStatus(Osi.GetHostCharacter(), 'LoseLives', 10, 0, Osi.GetHostCharacter())
-            --Osi.PartyIncreaseActionResourceValue(Osi.GetHostCharacter(), 'Lives', -1)
-        end
-    elseif string.find(characterGuid, 'Player') then
-        Ext.Utils.Print('fsdfsdf')
-        --Osi.RemoveStatus(characterGuid, 'LoseLives')
-    end
-end)
 
 ------------------ functions ------------------------
 
@@ -173,13 +147,17 @@ function getNextTarget(characterGuid, currentTargetIndex)
         return currentTargetIndex + 1
     else
         -- When final dest os reacjed
+        Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
+        Osi.Die(characterGuid)
         return nil
     end
 end
 
 -- Function to handle debug
 function HandleDebug(guid)
+    --Osi.PartyIncreaseActionResourceValue(guid, 'Lives', 1)
     local x, y, z = Osi.GetPosition(guid)
+    Osi.UseSpellAtPosition(guid, 'Target_Re', x,y,z)
     local crate = "{" .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z) .. "}"
     Ext.Utils.Print("local Crate1 = " .. crate)
 	new_item = Osi.CreateAt("23578669-058f-4318-8e51-87523fc1307f", x, y, z, 0, 1, "")
