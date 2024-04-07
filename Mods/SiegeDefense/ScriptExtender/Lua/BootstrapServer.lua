@@ -3,8 +3,6 @@ local characterTargets = {}
 local turnCount = 0
 local siegePoints = 5
 local mapConfig0 = Ext.Require('Maps/Map0.lua')
-Ext.Utils.Print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-Ext.Utils.Print(mapConfig0)
 -- LevelLoaded Listener
 Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
 	Ext.Utils.Print("Level Loaded: " .. level)
@@ -19,22 +17,49 @@ end)
 
 -- StatusApplied Listener
 Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
-	Ext.Utils.Print('Status applied: '.. status)
-    if status == "Spawn_Ally_Status" then
-        --Ext.Utils.Print('Entity has status for spawn ally')
+    Ext.Utils.Print('Status applied: '.. status)
+    if string.find(status, 'Spawn_Ally') then
         local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
-        Osi.RemovePassive(guid, "DeathRewards")
-        Osi.Die(guid)
-        local goblinTemplateID = Osi.GetTemplate("S_CAMP_PartyGoblin_004_2fed2230-f4b2-4ac2-9400-e4866072ff99")
-        local goblinID = CreateAt(goblinTemplateID, spawnX, spawnY + 3, spawnZ, 0,0,"")
-        siegePoints = siegePoints - 1
-        Osi.SetFaction(goblinID, '6545a015-1b3d-66a4-6a0e-6ec62065cdb7')
+        local parts = {}
+        for part in string.gmatch(status, "[^_]+") do
+            table.insert(parts, part)
+        end
+
+        -- Check if we have enough parts to proceed
+        if #parts >= 4 then
+            -- Extracting first three characters of third and fourth parts and concatenating
+            local part3 = parts[3]:sub(1, 3):upper()
+            local part4 = parts[4]:sub(1, 3):upper()
+            local variableName = part3 .. "_" .. part4
+
+            -- Dynamically get the value from mapConfig0
+            Ext.Utils.Print('variableName: ' .. tostring(variableName))
+            local valueFromMapConfig0 = mapConfig0[variableName]
+
+            -- Do something with the value
+            if valueFromMapConfig0 then
+                local ally_template = valueFromMapConfig0
+                Osi.RemovePassive(guid, "DeathRewards")
+                Ext.Utils.Print('#################Die 2')
+                Osi.Die(guid)
+                local goblinID = CreateAt(ally_template, spawnX, spawnY + 3, spawnZ, 0, 0, "")
+                siegePoints = siegePoints - 1
+                Osi.SetFaction(goblinID, '6545a015-1b3d-66a4-6a0e-6ec62065cdb7')
+            else
+                Ext.Utils.Print('No value found in mapConfig0 for key: ' .. tostring(variableName))
+            end
+        end
 	elseif status == "Map0" then
         HandleStartGameMap(guid, mapConfig0)
 	elseif status == "LeaveTut" then
 		TeleportCharacter(guid, {-84.692207336426, 19.01319694519, -387.45742797852})
-	elseif status == "DEBUG" then
-		HandleDebug(guid)
+    elseif status == "Debug_Spawn_Enemy_Status" then
+        local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
+        Osi.RemovePassive(guid, "DeathRewards")
+        Ext.Utils.Print('#################Die 2')
+        Osi.Die(guid)
+        local debugID = CreateAt('debug_Goblins_Female_Caster_451ba53a-9070-4d9e-b7f8-6322b64277ea', spawnX, spawnY + 3, spawnZ, 0, 0, "")
+        Osi.SetFaction(debugID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
     elseif status == "DYING" then
         if Osi.HasPassive(guid, 'DeathRewards') == 1 then
             siegePoints = siegePoints + 1
@@ -50,14 +75,15 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     Ext.Utils.Print("Faction ID for character: " .. factionID)
     if string.find(characterGuid, 'Squ') then
         Ext.Utils.Print("Current Turn: " .. tostring(turnCount))
+        turnCount = 9
         if turnCount == 1 then
-            local mephitID = CreateAt(Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+            local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
             Osi.SetFaction(mephitID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
         elseif turnCount == 2 then
-            local mephitID = CreateAt(Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+            local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
             Osi.SetFaction(mephitID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
         elseif turnCount == 3 then
-            local mephitID = CreateAt(Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+            local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
             Osi.SetFaction(mephitID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
         elseif turnCount == 4 then
             local golemID = CreateAt(GetTemplate("S_UND_KethericCity_AdamantineGolem_2a5997fc-5f2a-4a13-b309-bed16da3b255"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
@@ -85,6 +111,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
             -- Move to the next target
             currentTargetIndex = getNextTarget(characterGuid, currentTargetIndex)
             if currentTargetIndex == nil then
+                Ext.Utils.Print('#################Die 3')
                 Osi.Die(characterGuid)
                 return -- All targets reached
             end
@@ -119,7 +146,6 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
         -- Move the entity
         Osi.CharacterMoveToPosition(characterGuid, newX, currentY, newZ, '10', "", 1)
         Osi.Attack(characterGuid, Osi.GetHostCharacter(), 1)
-
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
     elseif string.find(characterGuid, 'Player') then
@@ -127,7 +153,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     end
 end)
 
-
+Ext.Osiris.RegisterListener("CastedSpell", 5, "after", function(caster, spell, spellType, spellElement, storyActionID)end)
 ------------------ functions ------------------------
 -- Function to get the next target position
 function getNextTarget(characterGuid, currentTargetIndex)
@@ -135,19 +161,9 @@ function getNextTarget(characterGuid, currentTargetIndex)
         return currentTargetIndex + 1
     else
         -- When final dest os reacjed
-        Osi.RemovePassive(characterGuid, "DeathRewards")
-        Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
+        --Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
         return nil
     end
-end
-
--- Function to handle debug
-function HandleDebug(guid)
-    local x, y, z = Osi.GetPosition(guid)
-    Osi.UseSpellAtPosition(guid, 'Target_Re', x,y,z)
-    local crate = "{" .. tostring(x) .. "," .. tostring(y) .. "," .. tostring(z) .. "}"
-    Ext.Utils.Print("local Crate1 = " .. crate)
-	new_item = Osi.CreateAt("23578669-058f-4318-8e51-87523fc1307f", x, y, z, 0, 1, "")
 end
 
 -- Function to handle startgame status
@@ -161,10 +177,9 @@ function HandleStartGameMap(guid, mapConfig)
     local rx, ry, rz = mapConfig.Crate2[1], mapConfig.Crate2[2], mapConfig.Crate2[3]
     new_item_right = Osi.CreateAt(mapConfig.CRATE, rx, ry, rz, 0, 1, "")
     last_item_right = PlaceBoxes(new_item_right, mapConfig.placements_right, mapConfig)
-
-    local mephitID = CreateAt(Osi.GetTemplate("S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
-    Osi.SetFaction(mephitID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
-    Ext.Utils.Print("mapConfig0 at hadnlestartgamemap end: ", tostring(mapConfig0))
+--S_HAG_MudMephit_04_2a99e33a-cb96-40a0-bb8e-4a118719e794
+    local initialID = CreateAt("debug_Goblins_Female_Caster_451ba53a-9070-4d9e-b7f8-6322b64277ea", 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+    Osi.SetFaction(initialID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
 end
 
 function PlaceBoxes(item, placements, mapConfig)

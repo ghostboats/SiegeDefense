@@ -6,13 +6,6 @@ data "DisplayName" "Ally_Generic"
 data "Description" ""
 data "StatusPropertyFlags" "BringIntoCombat;InitiateCombat"
 
-new entry "Spawn_Ally_Status"
-type "StatusData"
-data "StatusType" "BOOST"
-data "Boosts" ""
-data "DisplayName" "h669327ca70df4403a98c946b726b580ae4g9"
-data "Description" "h0e63d0d662e54f5780932e8ec11cdfb0b52c"
-
 new entry "Death_Rewards_Status"
 type "StatusData"
 data "StatusType" "BOOST"

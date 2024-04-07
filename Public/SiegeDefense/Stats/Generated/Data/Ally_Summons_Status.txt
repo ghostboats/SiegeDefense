@@ -1,0 +1,13 @@
+new entry "Spawn_Ally_Goblin_Ranger"
+type "StatusData"
+data "StatusType" "BOOST"
+data "Boosts" ""
+data "DisplayName" "h669327ca70df4403a98c946b726b580ae4g9"
+data "Description" "h0e63d0d662e54f5780932e8ec11cdfb0b52c"
+
+new entry "Spawn_Ally_Goblin_Caster"
+type "StatusData"
+data "StatusType" "BOOST"
+data "Boosts" ""
+data "DisplayName" "h1c30227a2a7641a9b15fb83327267c200320"
+data "Description" "hf9c50afb74234e189f42267d6a7a038c808g"

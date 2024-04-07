@@ -1,10 +1,15 @@
 local map0 = {}
 
+------------------------- Ally RT ----------------------
+------------------------- Goblins ----------------------
+map0.GOB_RAN = 'SD_Goblins_Male_Ranger_d9990b6e-c7c0-4534-aee5-12540d8ff44f'
+map0.GOB_CAS = 'SD_Goblins_Female_Caster_bdb41598-98a3-44dd-a287-6c8882ea0441'
+
 ------------------ Coordinates and uuids ---------------
 map0.MAP_0 = {224.95590209961,16.6357421875,324.15930175781}
 map0.Crate1 = {220.62478637695,15.830078125,322.23071289062}
 map0.Crate2 = {220.62478637695,15.830078125,317.23071289062}
-map0.CRATE = "23578669-058f-4318-8e51-87523fc1307f"
+map0.CRATE = "97cdac50-9435-4174-b3bc-fe16fad7b169"
 
 -- Define an array of target positions
 map0.targetPositions = {

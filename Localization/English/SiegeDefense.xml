@@ -26,4 +26,24 @@
     <content contentuid="h9fd9160a9c7c440cb25277c26aea56a68gbf" version="1">Death Rewards</content>
     <content contentuid="h0e63d0d662e54f5780932e8ec11cdfb0b52c" version="1">Something about spawning</content>
     <content contentuid="h669327ca70df4403a98c946b726b580ae4g9" version="1">Spawning</content>
+    <content contentuid="h56990bfe43a24b8aa1f0cae25c843195112e" version="1">Debug Spells</content>
+    <content contentuid="heb44a2156cac46ca8bd0f88de30c3a0f7b3g" version="1">Houses all the debugging spells</content>
+    <content contentuid="h45a5bd23b9bf4132a59a5b9f0117edf1ggad" version="1">Spawn Entity</content>
+    <content contentuid="h3d506039a9824484a7d15f2d94bc07e9c2dd" version="1">Spawn an entity to test.</content>
+
+    <content contentuid="hb69c2590g30ecg494cga56fgdf4b27f8846f" version="1">Goblin Booyahg4</content>
+    <content contentuid="h77367922ge454g42cbgb1ecgacc84011d1d6" version="1">Goblin Tracker4</content>
+
+    <content contentuid="hb5b6bd734cf2438e936066ea934ca362f64f" version="1">Summon Goblins</content>
+    <content contentuid="h17dd6687b898464b8ff27ab68d004cfe3375" version="1">Container spell to summon various goblins</content>
+    <content contentuid="h1c30227a2a7641a9b15fb83327267c200320" version="1">Spawning Goblin Caster</content>
+    <content contentuid="hf9c50afb74234e189f42267d6a7a038c808g" version="1">Spawning Gobling Caster Status Description</content>
+    <content contentuid="h726b66698e244716a4e33cab7c3aa0bb2663" version="1">Goblin Ranger</content>
+    <content contentuid="hadedf5adc9dc4054ab95ef9cabd8616d695a" version="1">Summon a goblin Ranger</content>
+    <content contentuid="he194d4b9de0243d7b53a26e5c87eba0ee658" version="1">Goblin Caster</content>
+    <content contentuid="h0c94305df7414b8d88a22d1c570e6f2f6ga6" version="1">Summon a goblin casterr</content>
+    <content contentuid="h5267b27a06e145619cd3e577431d92a6g3c6" version="1">Debug Spawn Enemy</content>
+    <content contentuid="hbc6161d41e7b468db4f4de0481caf81cd940" version="1">Spawn an enemy for testing.</content>
+    <content contentuid="h4d84046ce24d4348a1bf041693a6ea9529f4" version="1">Debug_Spawn_Enemy_Status</content>
+    <content contentuid="hea3d9ff8ffe94e53a17e4ca9b83afbf6f4g0" version="1">Debug_Spawn_Enemy_Status Desciption</content>
 </contentList>
