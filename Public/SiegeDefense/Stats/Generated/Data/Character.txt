@@ -1861,7 +1861,7 @@ new entry "Debug_Goblin"
 type "Character"
 using "_Goblins"
 data "Vitality" "100"
-data "ActionResources" "Movement:10"
+data "ActionResources" "Movement:21"
 data "ArmorType" "Splint"
 
 new entry "Goblin_Child"
