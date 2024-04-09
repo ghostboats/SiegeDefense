@@ -22,44 +22,23 @@ Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
 end)
 
 Ext.Osiris.RegisterListener("CombatRoundStarted", 2, "before", function(combatGuid, round)
-    Ext.Utils.Print("ROUND " .. tostring(round) .. " STARTING FOR COMBATGUID: " .. combatGuid .. "\nENTITYSTATES TABLE:")
-    Ext.Utils.Print(string.format("%-20s %-30s %-10s", "Entity", "Coords", "Allegiance"))
+    Ext.Utils.Print("ROUND " .. tostring(round) .. " STARTING FOR COMBATGUID: " .. combatGuid)
+    Ext.Utils.Print("ENTITYSTATES TABLE:")
     for cguid, state in pairs(entityStates) do
         local coords = "{" .. state.x .. ", " .. state.y .. ", " .. state.z .. "}"
         local allegiance = state.type or "Unknown"
-        Ext.Utils.Print(string.format("%-20s %-30s %-10s", cguid, coords, allegiance))
+        Ext.Utils.Print("--------------------------------\n"..
+                        "GUID: "..cguid.."\n".."Coords: " .. coords .. "\n" .."Allegiance: "..allegiance.."\n"
+                        .."--------------------------------")
     end
 end)
 
--- Listener for when an entity's turn ends
-Ext.Osiris.RegisterListener("TurnEnded", 1, "before", function(characterGuid)
-    local x, y, z = Osi.GetPosition(characterGuid)
-    entityStates[characterGuid] = {x = x, y = y, z = z}
-    Ext.Utils.Print("Entity state updated: GUID=" .. characterGuid .. ", Position={" .. x .. ", " .. y .. ", " .. z .. "}")
-
-    -- Find the closest ally entity
-    local closestAllyGUID = nil
-    local minDistance = math.huge
-    for guid, state in pairs(entityStates) do
-        if state.type == 'ally' and guid ~= characterGuid then
-            local distance = math.sqrt((x - state.x)^2 + (y - state.y)^2 + (z - state.z)^2)
-            if distance < minDistance then
-                minDistance = distance
-                closestAllyGUID = guid
-            end
-        end
-    end
-
-    -- Attack the closest ally entity
-    if closestAllyGUID then
-        Ext.Utils.Print("Character " .. characterGuid .. " is attacking closest ally: " .. closestAllyGUID)
-        Osi.Attack(characterGuid, closestAllyGUID, 1)
-    end
-end)
 
 -- StatusApplied Listener
 Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
-    Ext.Utils.Print('Status applied: '.. status)
+    if not mapConfig0.exclude[status] then
+        Ext.Utils.Print('Status applied: '.. status)
+    end
     if string.find(status, 'Spawn_Ally') then
         local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
         local parts = {}
@@ -121,7 +100,6 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     Ext.Utils.Print("Turn has started for character: " .. characterGuid)
     local factionID = Osi.GetFaction(characterGuid)
     local trimmedFactionID = factionID:gsub("^Evil NPC_", "")
-    Ext.Utils.Print("Trimmed faction ID: " .. trimmedFactionID)
     if string.find(characterGuid, 'Squ') then
         if turnCount == 1 then
             local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
@@ -161,7 +139,28 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
 
         -- Update the target index in the table
         characterTargets[characterGuid] = currentTargetIndex
-        --Osi.Attack(characterGuid, Osi.GetHostCharacter(), 1)
+        local x,y,z = Osi.GetPosition(characterGuid)
+
+        -- Find the closest ally entity
+        local closestAllyGUID = nil
+        local minDistance = math.huge
+        for guid, state in pairs(entityStates) do
+            if state.type == 'ally' and guid ~= characterGuid then
+                local distance = math.sqrt((x - state.x)^2 + (y - state.y)^2 + (z - state.z)^2)
+                if distance < minDistance then
+                    minDistance = distance
+                    closestAllyGUID = guid
+                end
+            end
+        end
+
+        -- Attack the closest ally entity
+        if closestAllyGUID then
+            Ext.Utils.Print("Character " .. characterGuid .. " is attacking closest ally: " .. closestAllyGUID)
+            Osi.Attack(characterGuid, closestAllyGUID, 1)
+        end
+        entityStates[characterGuid] = {x = x, y = y, z = z, type = 'enemy'}
+        Ext.Utils.Print("Entity state updated: GUID=" .. characterGuid .. ", Position={" .. x .. ", " .. y .. ", " .. z .. "}")
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
     elseif string.find(characterGuid, 'Player') then

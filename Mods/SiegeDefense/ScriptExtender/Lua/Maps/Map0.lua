@@ -2,6 +2,17 @@ local map0 = {}
 
 ---------------------- Debug Stuff ----------------------
 map0.DEBUG_ENEMY = 'debug_Goblins_Female_Caster_451ba53a-9070-4d9e-b7f8-6322b64277ea'
+map0.exclude = {
+    ["Spawn_Ally"] = false,
+    ["Map0"] = false,
+    ["LeaveTut"] = false,
+    ["Debug_Spawn_Enemy_Status"] = false,
+    ["DYING"] = false,
+    ["Debug_Fake_Status"] = false,
+    ["TEMPORARILY_HOSTILE"] = true,
+    ["INSURFACE"] = true,
+    ["Ally_Generic"] = true
+}
 
 ------------------------ Ally RT ------------------------
 ------------------------ Goblins ------------------------
@@ -32,19 +43,19 @@ map0.targetPositions = {
 
 -- Placing boxes with multiple directions and distances
 map0.placements_left = {
-    {direction = 'east', distance = 8, height = 5},
-    {direction = 'south', distance = 5, height = 5},
-    {direction = 'east', distance = 6, height = 5},
-    {direction = 'north', distance = 8, height = 5},
-    {direction = 'east', distance = 9, height = 5},
+    {direction = 'east', distance = 8, height = 4},
+    {direction = 'south', distance = 5, height = 4},
+    {direction = 'east', distance = 6, height = 4},
+    {direction = 'north', distance = 8, height = 4},
+    {direction = 'east', distance = 9, height = 4},
 }
 
 map0.placements_right = {
-    {direction = 'east', distance = 3, height = 5},
-    {direction = 'south', distance = 5, height = 5},
-    {direction = 'east', distance = 16, height = 5},
-    {direction = 'north', distance = 8, height = 5},
-    {direction = 'east', distance = 4, height = 5},
+    {direction = 'east', distance = 3, height = 4},
+    {direction = 'south', distance = 5, height = 4},
+    {direction = 'east', distance = 16, height = 4},
+    {direction = 'north', distance = 8, height = 4},
+    {direction = 'east', distance = 4, height = 4},
 }
 
 return map0
