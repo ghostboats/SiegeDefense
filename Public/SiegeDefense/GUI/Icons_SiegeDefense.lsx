@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<save>
+    <version major="4" minor="0" revision="9" build="322"/>
+    <region id="IconUVList">
+        <node id="root">
+            <children>
+                <node id="IconUV">
+                    <attribute id="MapKey" value="summon_goblins" type="FixedString" />
+                    <attribute id="U1" value="0.00024414" type="float" />
+                    <attribute id="U2" value="0.0310058" type="float" />
+                    <attribute id="V1" value="0.00024414" type="float" />
+                    <attribute id="V2" value="0.0310058" type="float" />
+                </node>
+            </children>
+        </node>
+    </region>
+    <region id="TextureAtlasInfo">
+        <node id="root">
+            <children>
+                <node id="TextureAtlasIconSize">
+                    <attribute id="Height" value="64" type="int32" />
+                    <attribute id="Width" value="64" type="int32" />
+                </node>
+                <node id="TextureAtlasPath">
+                    <attribute id="Path" value="SiegeDefense\Assets\Textures\Icons\Icons_SiegeDefense.dds" type="string" />
+                    <attribute id="UUID" value="9d15d96a-f412-4ea0-bfeb-2adc0021143c" type="FixedString" />
+                </node>
+                <node id="TextureAtlasTextureSize">
+                    <attribute id="Height" value="2048" type="int32" />
+                    <attribute id="Width" value="2048" type="int32" />
+                </node>
+            </children>
+        </node>
+    </region>
+</save>
