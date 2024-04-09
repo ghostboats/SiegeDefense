@@ -8,7 +8,6 @@ local turnCount = 2
 local siegePoints = 5
 local mapConfig0 = Ext.Require('Maps/Map0.lua')
 
-
 -- LevelLoaded Listener
 Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
 	Ext.Utils.Print("Level Loaded: " .. level)
@@ -16,6 +15,7 @@ Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
         Ext.Utils.Print('about to remove spells from host')
 		Osi.RemoveSpell(Osi.GetHostCharacter(), "Start_Game_Leave_Tut", 0)
 		Osi.OpenMessageBox(Osi.GetHostCharacter(), "level loaded wld main a")
+        Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game', Osi.GetHostCharacter())
 	elseif level == "TUT_Avernus_C" then
 		Osi.AddSpell(Osi.GetHostCharacter(), "Start_Game_Leave_Tut", 1, 0) 
 	end
@@ -77,14 +77,15 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
                 local ally_template = valueFromMapConfig0
                 Osi.RemovePassive(guid, "DeathRewards")
                 Osi.Die(guid)
-                local goblinID = CreateAt(ally_template, spawnX, spawnY + 3, spawnZ, 0, 0, "")
+                local allyID = CreateAt(ally_template, spawnX, spawnY + 3, spawnZ, 0, 0, "")
                 siegePoints = siegePoints - 1
-                Osi.SetFaction(goblinID, '6545a015-1b3d-66a4-6a0e-6ec62065cdb7')
-
-                local x, y, z = Osi.GetPosition(goblinID)
-                entityStates[goblinID] = {x = x, y = y, z = z, type = 'ally'}
-                
-
+                Osi.SetFaction(allyID, mapConfig0.f_ally)
+                --Osi.SetCombatGroupAndEnterCombat(allyID, Osi.CombatGetGuidFor(Osi.GetHostCharacter()),)
+                Osi.SetCombatGroupID(allyID, Osi.CombatGetGuidFor(Osi.GetHostCharacter()))
+                ---enabled integer
+                ---function Osi.SetCanJoinCombat(entity, enabled) end
+                local x, y, z = Osi.GetPosition(allyID)
+                entityStates[allyID] = {x = x, y = y, z = z, type = 'ally'}
             else
                 Ext.Utils.Print('No value found in mapConfig0 for key: ' .. tostring(variableName))
             end
@@ -97,14 +98,15 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
         Osi.RemovePassive(guid, "DeathRewards")
         Osi.Die(guid)
-        local debugID = CreateAt('debug_Goblins_Female_Caster_451ba53a-9070-4d9e-b7f8-6322b64277ea', spawnX, spawnY + 3, spawnZ, 0, 0, "")
-        Osi.SetFaction(debugID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+        local debugID = CreateAt(mapConfig0.DEBUG_ENEMY, spawnX, spawnY + 3, spawnZ, 0, 0, "")
+        Osi.SetFaction(debugID, mapConfig0.f_enemy)
         local x, y, z = Osi.GetPosition(debugID)
         entityStates[debugID] = {x = x, y = y, z = z, type = 'enemy'}
     elseif status == "DYING" then
         if Osi.HasPassive(guid, 'DeathRewards') == 1 then
             siegePoints = siegePoints + 1
             Ext.Utils.Print('Siege Points Rewarded, Current Count: '.. tostring(siegePoints))
+            --adjust state value for character aka delete it now that its dying.
         end
     elseif status == "Debug_Fake_Status" then
         local x,y,z = Osi.GetPosition(guid)
@@ -118,15 +120,18 @@ end)
 Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     Ext.Utils.Print("Turn has started for character: " .. characterGuid)
     local factionID = Osi.GetFaction(characterGuid)
+    local trimmedFactionID = factionID:gsub("^Evil NPC_", "")
+    Ext.Utils.Print("Trimmed faction ID: " .. trimmedFactionID)
     if string.find(characterGuid, 'Squ') then
         if turnCount == 1 then
             local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
-            Osi.SetFaction(mephitID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+            Osi.SetFaction(mephitID, mapConfig0.f_enemy)
             local x, y, z = Osi.GetPosition(mephitID)
             entityStates[mephitID] = {x = x, y = y, z = z, type = 'enemy'}
         end
-    elseif factionID == 'Evil NPC_64321d50-d516-b1b2-cfac-2eb773de1ff6' then
-        if not characterTargets[characterGuid] then-- Creaate target index for new chars
+    elseif trimmedFactionID == mapConfig0.f_enemy then
+        Ext.Utils.Print('Adding into characterTargers')
+        if not characterTargets[characterGuid] then-- Create target index for new chars
             characterTargets[characterGuid] = 1
         end
 
@@ -145,12 +150,11 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
                 else
                     -- When final destination is reached
                     Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
-                    Ext.Utils.Print('Character Dying, if we add a character state variable or map, we would edit it here')
                     Osi.Die(characterGuid)
                     break
                 end
                 movementLeft = movementLeft - distanceToTarget
-            else-- break out of loop
+            else-- not enough movemet to carry on, breaking loop
                 break
             end
         end
@@ -179,7 +183,7 @@ function HandleStartGameMap(guid, mapConfig)
     last_item_right = PlaceBoxes(new_item_right, mapConfig.placements_right, mapConfig)
 
     local initialID = CreateAt("debug_Goblins_Female_Caster_451ba53a-9070-4d9e-b7f8-6322b64277ea", 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
-    Osi.SetFaction(initialID, '64321d50-d516-b1b2-cfac-2eb773de1ff6')
+    Osi.SetFaction(initialID, mapConfig.f_enemy)
 
     local x, y, z = Osi.GetPosition(initialID)
     entityStates[initialID] = {x = x, y = y, z = z, type = 'enemy'}
