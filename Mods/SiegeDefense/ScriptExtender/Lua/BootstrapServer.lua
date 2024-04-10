@@ -1,7 +1,5 @@
 --Ext.Osiris.RegisterListener("CastedSpell", 5, "after", function(caster, spell, spellType, spellElement, storyActionID)end)
 
--- Table to store the current target index for each character
-local characterTargets = {}
 -- Global table to store entity states
 local entityStates = {}
 local turnCount = 2
@@ -27,12 +25,12 @@ Ext.Osiris.RegisterListener("CombatRoundStarted", 2, "before", function(combatGu
     for cguid, state in pairs(entityStates) do
         local coords = "{" .. state.x .. ", " .. state.y .. ", " .. state.z .. "}"
         local allegiance = state.type or "Unknown"
+        local targetIndex = state.currentTargetIndex or "N/A"
         Ext.Utils.Print("--------------------------------\n"..
-                        "GUID: "..cguid.."\n".."Coords: " .. coords .. "\n" .."Allegiance: "..allegiance.."\n"
+                        "GUID: "..cguid.."\n".."currentTargetIndex: "..targetIndex.."\n".."Allegiance: "..allegiance.."\n".."Coords: "..coords.."\n"
                         .."--------------------------------")
     end
 end)
-
 
 -- StatusApplied Listener
 Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
@@ -59,12 +57,9 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
                 local allyID = CreateAt(ally_template, spawnX, spawnY + 3, spawnZ, 0, 0, "")
                 siegePoints = siegePoints - 1
                 Osi.SetFaction(allyID, mapConfig0.f_ally)
-                --Osi.SetCombatGroupAndEnterCombat(allyID, Osi.CombatGetGuidFor(Osi.GetHostCharacter()),)
                 Osi.SetCombatGroupID(allyID, Osi.CombatGetGuidFor(Osi.GetHostCharacter()))
-                ---enabled integer
-                ---function Osi.SetCanJoinCombat(entity, enabled) end
                 local x, y, z = Osi.GetPosition(allyID)
-                entityStates[allyID] = {x = x, y = y, z = z, type = 'ally'}
+                entityStates[allyID] = {x = x, y = y, z = z, type = 'ally', currentTargetIndex = 'No Move'}
             else
                 Ext.Utils.Print('No value found in mapConfig0 for key: ' .. tostring(variableName))
             end
@@ -102,46 +97,45 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     local trimmedFactionID = factionID:gsub("^Evil NPC_", "")
     if string.find(characterGuid, 'Squ') then
         if turnCount == 1 then
-            local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
+            local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), mapConfig.enemy_spawn1[1], mapConfig.enemy_spawn1[2], mapConfig.enemy_spawn1[3], 0,0,"")
             Osi.SetFaction(mephitID, mapConfig0.f_enemy)
             local x, y, z = Osi.GetPosition(mephitID)
-            entityStates[mephitID] = {x = x, y = y, z = z, type = 'enemy'}
+            entityStates[mephitID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 'initial'}
         end
     elseif trimmedFactionID == mapConfig0.f_enemy then
         Ext.Utils.Print('Adding into characterTargers')
-        if not characterTargets[characterGuid] then-- Create target index for new chars
-            characterTargets[characterGuid] = 1
-        end
-
-        local currentTargetIndex = characterTargets[characterGuid]
+        local currentTargetIndex = entityStates[characterGuid] and entityStates[characterGuid].currentTargetIndex or 0
         local movementLeft = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
         local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
         Ext.Utils.Print("Current Position: {" .. currentX .. ", " .. currentY .. ", " .. currentZ .. "}")
         while movementLeft > 0 do
-            local currentTarget = mapConfig0.targetPositions[currentTargetIndex]
-            local distanceToTarget = Osi.GetDistanceToPosition(characterGuid, currentTarget.x, currentTarget.y, currentTarget.z)
+            local nextTarget = mapConfig0.targetPositions[currentTargetIndex+1]
+            if nextTarget == nil then
+                Osi.RemovePassive(characterGuid, "DeathRewards")
+                Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
+                Osi.Die(characterGuid)
+                break
+            end
+            local distanceToTarget = Osi.GetDistanceToPosition(characterGuid, nextTarget.x, nextTarget.y, nextTarget.z)
             if  movementLeft > distanceToTarget then--will overshoot position, need to move to next position and repeat
                 if currentTargetIndex < #mapConfig0.targetPositions then-- Move to the next target
-                    Ext.Utils.Print("Moving towards Target #" .. currentTargetIndex .. ": {" .. currentTarget.x .. ", " .. currentTarget.y .. ", " .. currentTarget.z .. "}")
-                    Osi.CharacterMoveToPosition(characterGuid, currentTarget.x, currentTarget.y, currentTarget.z, '10', "", 1)
                     currentTargetIndex = currentTargetIndex + 1
+                    Ext.Utils.Print("Moving towards Target #" .. currentTargetIndex .. ": {" .. nextTarget.x .. ", " .. nextTarget.y .. ", " .. nextTarget.z .. "}")
+                    Osi.CharacterMoveToPosition(characterGuid, nextTarget.x, nextTarget.y, nextTarget.z, '10', "", 1)
                 else
                     -- When final destination is reached
+                    Osi.RemovePassive(characterGuid, "DeathRewards")
                     Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
                     Osi.Die(characterGuid)
                     break
                 end
-                movementLeft = movementLeft - distanceToTarget
+                movementLeft = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
             else-- not enough movemet to carry on, breaking loop
                 break
             end
         end
 
-        -- Update the target index in the table
-        characterTargets[characterGuid] = currentTargetIndex
         local x,y,z = Osi.GetPosition(characterGuid)
-
-        -- Find the closest ally entity
         local closestAllyGUID = nil
         local minDistance = math.huge
         for guid, state in pairs(entityStates) do
@@ -158,9 +152,10 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
         if closestAllyGUID then
             Ext.Utils.Print("Character " .. characterGuid .. " is attacking closest ally: " .. closestAllyGUID)
             Osi.Attack(characterGuid, closestAllyGUID, 1)
+            local qx,qy,qz = Osi.GetPosition(characterGuid)
+            --always saves start pos not end pos. use index for loc info.
+            entityStates[characterGuid] = {x = qx, y = qy, z = qz, type = 'enemy', currentTargetIndex = currentTargetIndex}
         end
-        entityStates[characterGuid] = {x = x, y = y, z = z, type = 'enemy'}
-        Ext.Utils.Print("Entity state updated: GUID=" .. characterGuid .. ", Position={" .. x .. ", " .. y .. ", " .. z .. "}")
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
     elseif string.find(characterGuid, 'Player') then
@@ -181,11 +176,7 @@ function HandleStartGameMap(guid, mapConfig)
     new_item_right = Osi.CreateAt(mapConfig.CRATE, rx, ry, rz, 0, 1, "")
     last_item_right = PlaceBoxes(new_item_right, mapConfig.placements_right, mapConfig)
 
-    local initialID = CreateAt("debug_Goblins_Female_Caster_451ba53a-9070-4d9e-b7f8-6322b64277ea", 218.16305541992, 16.377229690552, 319.40869140625, 0,0,"")
-    Osi.SetFaction(initialID, mapConfig.f_enemy)
-
-    local x, y, z = Osi.GetPosition(initialID)
-    entityStates[initialID] = {x = x, y = y, z = z, type = 'enemy'}
+    Osi.SetFaction(CreateAt(mapConfig.DEBUG_ENEMY, 218.16305, 16.377229, 319.40869, 0,0,""), mapConfig.f_enemy)
 end
 
 function PlaceBoxes(item, placements, mapConfig)
@@ -221,10 +212,4 @@ function PlaceBoxes(item, placements, mapConfig)
     end
 
     return first_row_last_item
-end
-
-
-function sleep(seconds)
-    local start = os.time()
-    repeat until os.time() > start + seconds
 end
