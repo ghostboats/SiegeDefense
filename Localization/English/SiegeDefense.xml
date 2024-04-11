@@ -17,13 +17,6 @@
     <content contentuid="h75b6e6bf00514956b45195166f4dee089g5c" version="1">SiegePoints are used as currency. From upgrading/buying units to adding modifiers, siegepoints handles it all. Collect more points mainly from mobs.</content>
     <content contentuid="h1f922aea66da4e058ed08882eb5a8a498a02" version="1">SiegePoints</content>
     <content contentuid="h74d0d0ec3b9143cda6c47c7805fc81167059" version="1">Your current lives. Drops each time an entity reachs the end of the map.</content>
-    <content contentuid="h49eb32bc255f4b308b380487e979deea8964" version="1">Lives</content>
-    <content contentuid="h0ccf798745fb4180bc49965e540d4b2334c8" version="1">Lose Lives</content>
-    <content contentuid="heb619ed1d85f4d6a8c835d76fb8cb16327g5" version="1">An enemy reached the end of the map and cost you a life.</content>
-    <content contentuid="h7f86b1a109ce4f46b6660ad63c74d677ce3c" version="1">DeathRewards</content>
-    <content contentuid="h1fd67ac1a3de403f90275825c1a91f535c03" version="1">Gives one siege point on death</content>
-    <content contentuid="hc34c63ca2b6f4123bfec7b36d9942fbe2f54" version="1">Gives one siege point on death</content>
-    <content contentuid="h9fd9160a9c7c440cb25277c26aea56a68gbf" version="1">Death Rewards</content>
     <content contentuid="h0e63d0d662e54f5780932e8ec11cdfb0b52c" version="1">Something about spawning</content>
     <content contentuid="h669327ca70df4403a98c946b726b580ae4g9" version="1">Spawning</content>
     <content contentuid="h56990bfe43a24b8aa1f0cae25c843195112e" version="1">Debug Spells</content>
@@ -46,4 +39,8 @@
     <content contentuid="hbc6161d41e7b468db4f4de0481caf81cd940" version="1">Spawn an enemy for testing.</content>
     <content contentuid="h4d84046ce24d4348a1bf041693a6ea9529f4" version="1">Debug_Spawn_Enemy_Status</content>
     <content contentuid="hea3d9ff8ffe94e53a17e4ca9b83afbf6f4g0" version="1">Debug_Spawn_Enemy_Status Desciption</content>
+    <content contentuid="h786a77890f2542eabcae4d6824bd82a9622b" version="1">Siege Point Recovery</content>
+    <content contentuid="h88ef972c0029411fbca329cda58504f418d9" version="1">Gain one siege point.</content>
+    <content contentuid="h1af4deb22ae1401cbe0f74909b5ba25fbf74" version="1"></content>
+    <content contentuid="h7d1e3100e36c45b7b2f5f06b4fce94a9363b" version="1"></content>
 </contentList>

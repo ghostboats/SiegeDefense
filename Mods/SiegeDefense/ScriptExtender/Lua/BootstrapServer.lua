@@ -52,7 +52,6 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
 
             if valueFromMapConfig0 then
                 local ally_template = valueFromMapConfig0
-                Osi.RemovePassive(guid, "DeathRewards")
                 Osi.Die(guid)
                 local allyID = CreateAt(ally_template, spawnX, spawnY + 3, spawnZ, 0, 0, "")
                 siegePoints = siegePoints - 1
@@ -70,18 +69,23 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         Osi.TeleportToPosition(guid, -84.692207336426, 19.01319694519, -387.45742797852, "", 1, 1, 1, 1, 1)
     elseif status == "Debug_Spawn_Enemy_Status" then
         local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
-        Osi.RemovePassive(guid, "DeathRewards")
         Osi.Die(guid)
         local debugID = CreateAt(mapConfig0.DEBUG_ENEMY, spawnX, spawnY + 3, spawnZ, 0, 0, "")
         Osi.SetFaction(debugID, mapConfig0.f_enemy)
         local x, y, z = Osi.GetPosition(debugID)
         entityStates[debugID] = {x = x, y = y, z = z, type = 'enemy'}
     elseif status == "DYING" then
-        if Osi.HasPassive(guid, 'DeathRewards') == 1 then
-            siegePoints = siegePoints + 1
-            Ext.Utils.Print('Siege Points Rewarded, Current Count: '.. tostring(siegePoints))
-            --adjust state value for character aka delete it now that its dying.
+        local x, y, z = Osi.GetPosition(guid)
+        local lastPosition = mapConfig0.targetPositions[#mapConfig0.targetPositions] -- Get the last position in the array
+        local distanceToLast = Osi.GetDistanceToPosition(guid, lastPosition.x, lastPosition.y, lastPosition.z)
+        local hasStatus = Osi.GetStatusCurrentLifetime(guid, 'Siege_Point_Recovery_Block')
+        Ext.Utils.Print(hasStatus)
+        if hasStatus >= 1 then
+            Ext.Utils.Print('hasStatus >= 1')
+
+
         end
+        --adjust state value for character aka delete it now that its dying.
     elseif status == "Debug_Fake_Status" then
         local x,y,z = Osi.GetPosition(guid)
         Ext.Utils.Print('Guid of summoned object: '..guid)
@@ -111,7 +115,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
         while movementLeft > 0 do
             local nextTarget = mapConfig0.targetPositions[currentTargetIndex+1]
             if nextTarget == nil then
-                Osi.RemovePassive(characterGuid, "DeathRewards")
+                Osi.ApplyStatus(characterGuid, 'Siege_Point_Recovery_Block', 10, 1, characterGuid)
                 Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
                 Osi.Die(characterGuid)
                 break
@@ -124,7 +128,6 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
                     Osi.CharacterMoveToPosition(characterGuid, nextTarget.x, nextTarget.y, nextTarget.z, '10', "", 1)
                 else
                     -- When final destination is reached
-                    Osi.RemovePassive(characterGuid, "DeathRewards")
                     Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
                     Osi.Die(characterGuid)
                     break
