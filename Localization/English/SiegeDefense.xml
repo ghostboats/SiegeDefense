@@ -43,4 +43,8 @@
     <content contentuid="h88ef972c0029411fbca329cda58504f418d9" version="1">Gain one siege point.</content>
     <content contentuid="h1af4deb22ae1401cbe0f74909b5ba25fbf74" version="1"></content>
     <content contentuid="h7d1e3100e36c45b7b2f5f06b4fce94a9363b" version="1"></content>
+    <content contentuid="ha63d731fb11c48ce8ab9d18e69fa6248e98f" version="1">Summon Skeletons</content>
+    <content contentuid="h4de4eed6eac04a768ef4627ff52a8028275c" version="1">Contianer Spell for skeleton summons</content>
+    <content contentuid="hf3c51c484b51425193cda97f5a5ca3e5da98" version="1">Spawn Skeleton Ranger</content>
+    <content contentuid="h27f0af6143f041b88330051511f404a40c5e" version="1">Cast toi summon a skeleton ranger</content>
 </contentList>

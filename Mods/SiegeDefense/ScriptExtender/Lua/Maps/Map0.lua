@@ -19,6 +19,9 @@ map0.exclude = {
 map0.GOB_RAN = 'SD_Goblins_Male_Ranger_d9990b6e-c7c0-4534-aee5-12540d8ff44f'
 map0.GOB_CAS = 'SD_Goblins_Female_Caster_bdb41598-98a3-44dd-a287-6c8882ea0441'
 
+map0.SKE_RAN = 'Undead_Skeleton_Ranger_4f45e5ab-b93c-4afd-8a21-9c87d653d4b8'
+map0.SKE_MEL = 'Undead_Skeleton_Melee_145fc868-9353-4ef1-8a1d-419fe96533fb'
+
 ------------------------ Faction ------------------------
 map0.f_enemy = '64321d50-d516-b1b2-cfac-2eb773de1ff6'
 map0.f_ally = '6545a015-1b3d-66a4-6a0e-6ec62065cdb7'
@@ -36,6 +39,7 @@ map0.CRATE = "97cdac50-9435-4174-b3bc-fe16fad7b169"
 map0.targetPositions = {
     {x = 226.49760437012, y = 16.8076171875, z = 319.62942504883},
     {x = 226.82446289062, y = 16.294921875, z = 314.53106689453},
+    {x = 228.50514221191, y = 17.233882904053, z = 314.84921264648},
     {x = 231.50514221191, y = 17.233882904053, z = 314.84921264648},
     {x = 236.56643676758, y = 17.2421875, z = 314.7282409668},
     {x = 237.89315795898, y = 17.375, z = 322.44702148438},

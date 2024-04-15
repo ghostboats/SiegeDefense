@@ -220,6 +220,24 @@
 					</children>
 				</node>
 
+<!--Skeletons-->
+				<node id="GameObjects">
+					<attribute id="CharacterVisualResourceID" type="FixedString" value="164c06cb-1988-43fe-3cec-ad0e0b1faeaf" />
+					<attribute id="Equipment" type="FixedString" value="EQP_Longbow" />
+					<attribute id="Flag" type="int32" value="0" />
+					<attribute id="Icon" type="FixedString" value="164c06cb-1988-43fe-3cec-ad0e0b1faeaf-EQP_Longbow_(Icon_Skeleton)" />
+					<attribute id="LevelName" type="FixedString" value="" />
+					<attribute id="MapKey" type="FixedString" value="4f45e5ab-b93c-4afd-8a21-9c87d653d4b8" />
+					<attribute id="Name" type="LSString" value="Undead_Skeleton_Ranger" />
+					<attribute id="ParentTemplateId" type="FixedString" value="531d498b-2ad0-4ebc-b272-e445faf3e38c" />
+					<attribute id="Stats" type="FixedString" value="Skeleton_Ranger" />
+					<attribute id="Type" type="FixedString" value="character" />
+					<attribute id="_OriginalFileVersion_" type="int64" value="144115203108241813" />
+					<children>
+						<node id="LocomotionParams" />
+					</children>
+				</node>
+
 <!--ITEMS-->
 
                 <node id="GameObjects">

@@ -5,17 +5,16 @@ local entityStates = {}
 local turnCount = 2
 local siegePoints = 5
 local mapConfig0 = Ext.Require('Maps/Map0.lua')
+local helperFunctions = Ext.Require('HelperFunctions.lua')
 
 -- LevelLoaded Listener
 Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
 	Ext.Utils.Print("Level Loaded: " .. level)
 	if level == "WLD_Main_A" then
-        Ext.Utils.Print('about to remove spells from host')
-		Osi.RemoveSpell(Osi.GetHostCharacter(), "Start_Game_Leave_Tut", 0)
-		Osi.OpenMessageBox(Osi.GetHostCharacter(), "level loaded wld main a")
         Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game', Osi.GetHostCharacter())
+        Ext.Utils.Print("Level Loaded: " .. level)
 	elseif level == "TUT_Avernus_C" then
-		Osi.AddSpell(Osi.GetHostCharacter(), "Start_Game_Leave_Tut", 1, 0) 
+		Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game_Leave_Tut', Osi.GetHostCharacter())
 	end
 end)
 
@@ -78,16 +77,13 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         local x, y, z = Osi.GetPosition(guid)
         local lastPosition = mapConfig0.targetPositions[#mapConfig0.targetPositions] -- Get the last position in the array
         local distanceToLast = Osi.GetDistanceToPosition(guid, lastPosition.x, lastPosition.y, lastPosition.z)
-        local hasStatus = Osi.GetStatusCurrentLifetime(guid, 'Siege_Point_Recovery_Block')
-        Ext.Utils.Print(hasStatus)
-        if hasStatus >= 1 then
-            Ext.Utils.Print('hasStatus >= 1')
+        Osi.ApplyStatus(Osi.GetHostCharacter(), 'Siege_Point_Recovery', 60, 1, Osi.GetHostCharacter())
 
 
-        end
         --adjust state value for character aka delete it now that its dying.
     elseif status == "Debug_Fake_Status" then
         local x,y,z = Osi.GetPosition(guid)
+        helperFunctions.TestFunction('my string')
         Ext.Utils.Print('Guid of summoned object: '..guid)
         Ext.Utils.Print("local targetPosition1 = {"..tostring(x)..","..tostring(y)..","..tostring(z).."}")
         Ext.Utils.Print("local targetPosition2 = {x = "..tostring(x)..", y = "..tostring(y)..", z = "..tostring(z).."}")
