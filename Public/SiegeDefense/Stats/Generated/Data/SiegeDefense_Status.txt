@@ -14,7 +14,7 @@ data "Description" "h88ef972c0029411fbca329cda58504f418d9"
 data "Icon" "TadpoleSuperPower_Sorcerer"
 data "StackId" "Siege_Point_Recovery"
 data "StatusPropertyFlags" "DisableOverhead;DisableCombatlog;DisablePortraitIndicator;NonExtendable"
-data "Boosts" "RestoreResource(SELF,SiegePoints,1,0);"
+data "Boosts" "ActionResource(SiegePoints,1,0)"
 
 new entry "Siege_Point_Recovery_Block"
 type "StatusData"

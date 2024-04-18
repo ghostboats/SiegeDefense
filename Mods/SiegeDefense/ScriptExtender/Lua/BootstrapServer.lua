@@ -77,7 +77,7 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         local x, y, z = Osi.GetPosition(guid)
         local lastPosition = mapConfig0.targetPositions[#mapConfig0.targetPositions] -- Get the last position in the array
         local distanceToLast = Osi.GetDistanceToPosition(guid, lastPosition.x, lastPosition.y, lastPosition.z)
-        Osi.ApplyStatus(Osi.GetHostCharacter(), 'Siege_Point_Recovery', 60, 1, Osi.GetHostCharacter())
+        Osi.ApplyStatus(Osi.GetHostCharacter(), 'Siege_Point_Recovery', -1, 1, Osi.GetHostCharacter())
 
 
         --adjust state value for character aka delete it now that its dying.
