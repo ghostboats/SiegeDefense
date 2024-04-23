@@ -11,7 +11,7 @@ local helperFunctions = Ext.Require('HelperFunctions.lua')
 Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
 	Ext.Utils.Print("Level Loaded: " .. level)
 	if level == "WLD_Main_A" then
-        Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game', Osi.GetHostCharacter())
+        --Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game', Osi.GetHostCharacter())
         Ext.Utils.Print("Level Loaded: " .. level)
 	elseif level == "TUT_Avernus_C" then
 		Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game_Leave_Tut', Osi.GetHostCharacter())
@@ -34,7 +34,7 @@ end)
 -- StatusApplied Listener
 Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
     if not mapConfig0.exclude[status] then
-        Ext.Utils.Print('Status applied: '.. status)
+        Ext.Utils.Print('Status applied: ' .. status .. ' to GUID: ' .. guid)
     end
     if string.find(status, 'Spawn_Ally') then
         local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
@@ -55,7 +55,10 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
                 local allyID = CreateAt(ally_template, spawnX, spawnY + 3, spawnZ, 0, 0, "")
                 siegePoints = siegePoints - 1
                 Osi.SetFaction(allyID, mapConfig0.f_ally)
-                Osi.SetCombatGroupID(allyID, Osi.CombatGetGuidFor(Osi.GetHostCharacter()))
+                local currentCombat = Osi.CombatGetGuidFor(Osi.GetHostCharacter())
+                if currentCombat then
+                    Osi.SetCombatGroupID(allyID, currentCombat)
+                end
                 local x, y, z = Osi.GetPosition(allyID)
                 entityStates[allyID] = {x = x, y = y, z = z, type = 'ally', currentTargetIndex = 'No Move'}
             else
@@ -72,21 +75,41 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         local debugID = CreateAt(mapConfig0.DEBUG_ENEMY, spawnX, spawnY + 3, spawnZ, 0, 0, "")
         Osi.SetFaction(debugID, mapConfig0.f_enemy)
         local x, y, z = Osi.GetPosition(debugID)
-        entityStates[debugID] = {x = x, y = y, z = z, type = 'enemy'}
+        debugID = 'debug_Goblins_Female_Caster_' .. debugID --if i ever have a problem with this, note how i change debugID after setting id and getting position
+        entityStates[debugID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
     elseif status == "DYING" then
-        local x, y, z = Osi.GetPosition(guid)
-        local lastPosition = mapConfig0.targetPositions[#mapConfig0.targetPositions] -- Get the last position in the array
-        local distanceToLast = Osi.GetDistanceToPosition(guid, lastPosition.x, lastPosition.y, lastPosition.z)
-        Osi.ApplyStatus(Osi.GetHostCharacter(), 'Siege_Point_Recovery', -1, 1, Osi.GetHostCharacter())
+        local entityState = entityStates[guid]
+        if entityState then
+            local currentIndex = entityState.currentTargetIndex
+            local positions = mapConfig0.targetPositions
+            local lastPositionIndex = #positions -- Get the index of the last position in the array
 
+            -- Debugging outputs
+            Ext.Utils.Print('Current Index: ' .. tostring(currentIndex))
+            Ext.Utils.Print('Last Position Index: ' .. tostring(lastPositionIndex))
+            Ext.Utils.Print('Current Entity Position: {' .. entityState.x .. ', ' .. entityState.y .. ', ' .. entityState.z .. '}')
 
-        --adjust state value for character aka delete it now that its dying.
+            -- Check if the current index matches the last index in the target positions
+            if currentIndex == lastPositionIndex then
+                -- Entity has reached the final position
+                Ext.Utils.Print('Entity reached final position before dying.')
+            else
+                -- Entity did not reach the final position and died
+                Ext.Utils.Print('Entity did not reach final position and was likely killed by a friendly unit. Regaining siege point.')
+                Osi.UseSpell(Osi.GetHostCharacter(), 'Regain_SiegePoint', Osi.GetHostCharacter())
+            end
+            entityStates[guid] = nil
+            Ext.Utils.Print('Entity state removed for GUID: ' .. guid)
+        else
+            Ext.Utils.Print('Doesnt exist in entity states, not deleted | GUID: ' .. guid)
+        end
     elseif status == "Debug_Fake_Status" then
         local x,y,z = Osi.GetPosition(guid)
-        helperFunctions.TestFunction('my string')
+        --helperFunctions.TestFunction('my string')
         Ext.Utils.Print('Guid of summoned object: '..guid)
         Ext.Utils.Print("local targetPosition1 = {"..tostring(x)..","..tostring(y)..","..tostring(z).."}")
         Ext.Utils.Print("local targetPosition2 = {x = "..tostring(x)..", y = "..tostring(y)..", z = "..tostring(z).."}")
+        Osi.AddGold(Osi.GetHostCharacter(), 1000)
 	end
 end)
 
@@ -100,18 +123,23 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
             local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), mapConfig.enemy_spawn1[1], mapConfig.enemy_spawn1[2], mapConfig.enemy_spawn1[3], 0,0,"")
             Osi.SetFaction(mephitID, mapConfig0.f_enemy)
             local x, y, z = Osi.GetPosition(mephitID)
-            entityStates[mephitID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 'initial'}
+            entityStates[mephitID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
         end
     elseif trimmedFactionID == mapConfig0.f_enemy then
         Ext.Utils.Print('Adding into characterTargers')
-        local currentTargetIndex = entityStates[characterGuid] and entityStates[characterGuid].currentTargetIndex or 0
+        local currentTargetIndex = 0  -- Default value
+        if entityStates[characterGuid] then
+            currentTargetIndex = entityStates[characterGuid].currentTargetIndex  -- Keep existing value otherwise
+        else
+            Ext.Utils.Print('no entry maybe')
+        end
         local movementLeft = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
         local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
         Ext.Utils.Print("Current Position: {" .. currentX .. ", " .. currentY .. ", " .. currentZ .. "}")
         while movementLeft > 0 do
             local nextTarget = mapConfig0.targetPositions[currentTargetIndex+1]
             if nextTarget == nil then
-                Osi.ApplyStatus(characterGuid, 'Siege_Point_Recovery_Block', 10, 1, characterGuid)
+                Ext.Utils.Print("num 1")
                 Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
                 Osi.Die(characterGuid)
                 break
@@ -122,11 +150,6 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
                     currentTargetIndex = currentTargetIndex + 1
                     Ext.Utils.Print("Moving towards Target #" .. currentTargetIndex .. ": {" .. nextTarget.x .. ", " .. nextTarget.y .. ", " .. nextTarget.z .. "}")
                     Osi.CharacterMoveToPosition(characterGuid, nextTarget.x, nextTarget.y, nextTarget.z, '10', "", 1)
-                else
-                    -- When final destination is reached
-                    Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
-                    Osi.Die(characterGuid)
-                    break
                 end
                 movementLeft = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
             else-- not enough movemet to carry on, breaking loop
@@ -154,6 +177,9 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
             local qx,qy,qz = Osi.GetPosition(characterGuid)
             --always saves start pos not end pos. use index for loc info.
             entityStates[characterGuid] = {x = qx, y = qy, z = qz, type = 'enemy', currentTargetIndex = currentTargetIndex}
+        else
+            local qx,qy,qz = Osi.GetPosition(characterGuid)
+            entityStates[characterGuid] = {x = qx, y = qy, z = qz, type = 'enemy', currentTargetIndex = currentTargetIndex}
         end
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
@@ -175,7 +201,13 @@ function HandleStartGameMap(guid, mapConfig)
     new_item_right = Osi.CreateAt(mapConfig.CRATE, rx, ry, rz, 0, 1, "")
     last_item_right = PlaceBoxes(new_item_right, mapConfig.placements_right, mapConfig)
 
-    Osi.SetFaction(CreateAt(mapConfig.DEBUG_ENEMY, 218.16305, 16.377229, 319.40869, 0,0,""), mapConfig.f_enemy)
+    local initialID = CreateAt(mapConfig.DEBUG_ENEMY, 218.16305, 16.377229, 319.40869, 0,0,"")
+    Osi.SetFaction(initialID, mapConfig.f_enemy)
+    local x, y, z = Osi.GetPosition(initialID)
+    --add eneity name to guid
+    initialID = 'debug_Goblins_Female_Caster_' .. initialID
+    entityStates[initialID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
+    Osi.UseSpell(Osi.GetHostCharacter(), 'Siege_Points_Setup', Osi.GetHostCharacter())
 end
 
 function PlaceBoxes(item, placements, mapConfig)

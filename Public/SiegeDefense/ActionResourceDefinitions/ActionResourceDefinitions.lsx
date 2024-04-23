@@ -9,8 +9,9 @@
                     <attribute id="DisplayName" type="TranslatedString" handle="h1f922aea66da4e058ed08882eb5a8a498a02" version="1"/>
                     <attribute id="MaxLevel" type="uint32" value="0"/>
                     <attribute id="Name" type="FixedString" value="SiegePoints"/>
-                    <attribute id="ReplenishType" type="FixedString" value="Never"/>
+                    <attribute id="ReplenishType" type="FixedString" value="Rest"/>
                     <attribute id="IsSpellResource" type="bool" value="false"/>
+                    <attribute id="PartyActionResource" type="bool" value="false"/>
                     <attribute id="ShowOnActionResourcePanel" type="bool" value="true"/>
                     <attribute id="UUID" type="guid" value="70cf4c21-61a2-4736-8c41-a6e1020c34be"/>
                 </node>

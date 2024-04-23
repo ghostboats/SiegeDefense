@@ -11,7 +11,8 @@ map0.exclude = {
     ["Debug_Fake_Status"] = false,
     ["TEMPORARILY_HOSTILE"] = true,
     ["INSURFACE"] = true,
-    ["Ally_Generic"] = true
+    ["Ally_Generic"] = true,
+    ["HEAL"] = true
 }
 
 ------------------------ Ally RT ------------------------

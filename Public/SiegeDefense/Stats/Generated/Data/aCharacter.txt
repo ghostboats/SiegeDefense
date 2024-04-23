@@ -30,7 +30,7 @@ using "_Goblins"
 data "Dexterity" "9"
 data "Vitality" "3"
 data "ActionResources" "Movement:15"
-data "Passives" "AttackOfOpportunity;Darkvision;DarknessRules"
+data "Passives" "AttackOfOpportunity;Darkvision;DarknessRules;Enemy_Generic_Passive"
 data "ArmorType" "Splint"
 
 new entry "Goblin_Child"
