@@ -5,14 +5,42 @@
         <node id="root">
             <children>
                 <node id="IconUV">
+                    <attribute id="MapKey" value="map0" type="FixedString" />
+                    <attribute id="U1" value="0.062744" type="float" />
+                    <attribute id="U2" value="0.093506" type="float" />
+                    <attribute id="V1" value="0.0002441" type="float" />
+                    <attribute id="V2" value="0.031006" type="float" />
+                </node>
+                <node id="IconUV">
+                    <attribute id="MapKey" value="start_maps" type="FixedString" />
+                    <attribute id="U1" value="0.093994" type="float" />
+                    <attribute id="U2" value="0.124756" type="float" />
+                    <attribute id="V1" value="0.0002441" type="float" />
+                    <attribute id="V2" value="0.031006" type="float" />
+                </node>
+                <node id="IconUV">
                     <attribute id="MapKey" value="summon_goblins" type="FixedString" />
+                    <attribute id="U1" value="0.125244" type="float" />
+                    <attribute id="U2" value="0.156006" type="float" />
+                    <attribute id="V1" value="0.0002441" type="float" />
+                    <attribute id="V2" value="0.031006" type="float" />
+                </node>
+                <node id="IconUV">
+                    <attribute id="MapKey" value="summon_skeletons" type="FixedString" />
+                    <attribute id="U1" value="0.156494" type="float" />
+                    <attribute id="U2" value="0.187256" type="float" />
+                    <attribute id="V1" value="0.0002441" type="float" />
+                    <attribute id="V2" value="0.031006" type="float" />
+                </node>
+                <node id="IconUV">
+                    <attribute id="MapKey" value="debug" type="FixedString" />
                     <attribute id="U1" value="0.00024414" type="float" />
                     <attribute id="U2" value="0.0310058" type="float" />
                     <attribute id="V1" value="0.00024414" type="float" />
                     <attribute id="V2" value="0.0310058" type="float" />
                 </node>
                 <node id="IconUV">
-                    <attribute id="MapKey" value="summon_skeletons" type="FixedString" />
+                    <attribute id="MapKey" value="debug_enemy_spawn" type="FixedString" />
                     <attribute id="U1" value="0.03149414" type="float" />
                     <attribute id="U2" value="0.0622558" type="float" />
                     <attribute id="V1" value="0.00024414" type="float" />
@@ -30,7 +58,7 @@
                 </node>
                 <node id="TextureAtlasPath">
                     <attribute id="Path" value="SiegeDefense\Assets\Textures\Icons\Icons_SiegeDefense.dds" type="string" />
-                    <attribute id="UUID" value="a32ec3a9-6da1-46c2-b7c7-24c224162ab2" type="FixedString" />
+                    <attribute id="UUID" value="f607af77-d7f5-4a08-88c4-04e9f8a5dcfd" type="FixedString" />
                 </node>
                 <node id="TextureAtlasTextureSize">
                     <attribute id="Height" value="2048" type="int32" />

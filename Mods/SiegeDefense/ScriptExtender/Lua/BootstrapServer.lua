@@ -2,7 +2,6 @@
 
 -- Global table to store entity states
 local entityStates = {}
-local turnCount = 2
 local siegePoints = 5
 local mapConfig0 = Ext.Require('Maps/Map0.lua')
 local helperFunctions = Ext.Require('HelperFunctions.lua')
@@ -29,6 +28,22 @@ Ext.Osiris.RegisterListener("CombatRoundStarted", 2, "before", function(combatGu
                         "GUID: "..cguid.."\n".."currentTargetIndex: "..targetIndex.."\n".."Allegiance: "..allegiance.."\n".."Coords: "..coords.."\n"
                         .."--------------------------------")
     end
+    Ext.Utils.Print("SPAWNING")
+    -- Check if there are enemies to spawn this round
+    local spawnInfo = mapConfig0.enemySpawns["Round " .. tostring(round)] -- for descriptive keys
+    -- local spawnInfo = mapConfig0.enemySpawns[round] -- for numeric indices
+    if spawnInfo then
+        for _, enemy in ipairs(spawnInfo) do
+            Ext.Utils.Print("Spawning " .. enemy.enemyName .. " at coordinates: {" .. enemy.coords.x .. ", " .. enemy.coords.y .. ", " .. enemy.coords.z .. "}")
+            local enemyID = CreateAt(Osi.GetTemplate(enemy.enemyName), enemy.coords.x, enemy.coords.y, enemy.coords.z, 0,0,"")
+            Osi.SetFaction(enemyID, mapConfig0.f_enemy)
+            local x, y, z = Osi.GetPosition(enemyID)
+            entityStates[enemyID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
+        end
+    else
+        Ext.Utils.Print("No enemies to spawn this round.")
+    end
+    
 end)
 
 -- StatusApplied Listener
@@ -82,7 +97,7 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         if entityState then
             local currentIndex = entityState.currentTargetIndex
             local positions = mapConfig0.targetPositions
-            local lastPositionIndex = #positions -- Get the index of the last position in the array
+            local lastPositionIndex = #positions - 1 -- Get the index of the last position in the array (sub by 1 since last position is far not intended to reach)
 
             -- Debugging outputs
             Ext.Utils.Print('Current Index: ' .. tostring(currentIndex))
@@ -118,14 +133,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     Ext.Utils.Print("Turn has started for character: " .. characterGuid)
     local factionID = Osi.GetFaction(characterGuid)
     local trimmedFactionID = factionID:gsub("^Evil NPC_", "")
-    if string.find(characterGuid, 'Squ') then
-        if turnCount == 1 then
-            local mephitID = CreateAt(Osi.GetTemplate("S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6"), mapConfig.enemy_spawn1[1], mapConfig.enemy_spawn1[2], mapConfig.enemy_spawn1[3], 0,0,"")
-            Osi.SetFaction(mephitID, mapConfig0.f_enemy)
-            local x, y, z = Osi.GetPosition(mephitID)
-            entityStates[mephitID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
-        end
-    elseif trimmedFactionID == mapConfig0.f_enemy then
+    if trimmedFactionID == mapConfig0.f_enemy then
         Ext.Utils.Print('Adding into characterTargers')
         local currentTargetIndex = 0  -- Default value
         if entityStates[characterGuid] then
@@ -136,7 +144,10 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
         local movementLeft = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
         local currentX, currentY, currentZ = Osi.GetPosition(characterGuid)
         Ext.Utils.Print("Current Position: {" .. currentX .. ", " .. currentY .. ", " .. currentZ .. "}")
+
+        
         while movementLeft > 0 do
+            Ext.Utils.Print("starting loop again")
             local nextTarget = mapConfig0.targetPositions[currentTargetIndex+1]
             if nextTarget == nil then
                 Ext.Utils.Print("num 1")
@@ -153,6 +164,11 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
                 end
                 movementLeft = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
             else-- not enough movemet to carry on, breaking loop
+                if distanceToTarget > 20 then
+                    Ext.Utils.Print("num 2")
+                    Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
+                    Osi.Die(characterGuid)
+                end
                 break
             end
         end
@@ -184,9 +200,10 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
     elseif string.find(characterGuid, 'Player') then
-        turnCount = turnCount + 1
+        Ext.Utils.Print("Player turn")
     end
 end)
+
 
 ------------------ functions ------------------------
 -- Function to handle startgame status
