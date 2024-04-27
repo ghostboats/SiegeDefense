@@ -77,7 +77,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
                     Osi.CharacterMoveToPosition(characterGuid, nextTarget.x, nextTarget.y, nextTarget.z, '10', "", 1)
                 end
                 movementLeft = Osi.GetActionResourceValuePersonal(characterGuid, 'Movement', 0)
-            else-- not enough movemet to carry on, breaking loop
+            else-- not enough movemet to carry on, breaking loop, added in this becausse of death before final spot issue
                 if distanceToTarget > 20 then
                     Ext.Utils.Print("num 2")
                     Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
