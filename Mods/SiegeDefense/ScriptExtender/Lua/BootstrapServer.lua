@@ -163,6 +163,10 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         local x, y, z = Osi.GetPosition(debugID)
         debugID = 'debug_Goblins_Female_Caster_' .. debugID --if i ever have a problem with this, note how i change debugID after setting id and getting position
         entityStates[debugID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
+    elseif status == "Upgrade_Weaponholder_Status" then
+        equipmentHandling(Osi.GetHostCharacter(), "c65c5dd5-705c-4103-904c-0835d81bd846")
+        Ext.Utils.Print('nice')
+        Ext.Utils.Print(Osi.GetHostCharacter())
     elseif status == "DYING" then
         local entityState = entityStates[guid]
         if entityState then
@@ -255,3 +259,75 @@ function PlaceBoxes(item, placements, mapConfig)
 
     return first_row_last_item
 end
+
+
+
+function DelayedCall(ms, func)
+    if ms == 0 then func() return end
+    local Time = 0
+    local handler
+    handler = Ext.Events.Tick:Subscribe(function(e)
+        Time = Time + e.Time.DeltaTime * 1000
+        if (Time >= ms) then
+            func()
+            Ext.Events.Tick:Unsubscribe(handler)
+        end
+    end)
+end
+
+
+-- equips a character with an armor
+--@param character string
+--@param mapkey string - mapkey
+function equipmentHandling(character, mapkey)
+    -- Ensure equiping is initialized
+    if equiping == nil then
+        equiping = {}
+    end
+
+    table.insert(equiping, {character = character, mapkey = mapkey})
+
+    -- First we have to spawn an item in with the Mapkey 
+    Osi.TemplateAddTo(mapkey, character, 1)
+
+    -- Delay since the function might be too fast for the item to get added
+    DelayedCall(100, function()
+        for _, entry in pairs(equiping) do
+            character = entry.character
+            mapkey = entry.mapkey
+
+            -- Then we have to get the actual id
+            _P("local uuid = Osi.GetItemByTemplateInInventory(", mapkey, ", ", character, ")")
+            local uuid = Osi.GetItemByTemplateInInventory(mapkey, character)
+            _P("Id of spawned item is ", uuid)
+
+            -- Then we can equip
+            Osi.Equip(character, uuid)
+        end
+    end)
+
+    -- TODO: After that, we probably should destroy unused ones, or give the player a button or something
+end
+
+
+-- LISTENERS
+--------------------------------------------------------------
+
+ Ext.Osiris.RegisterListener("TimerFinished",1,"after",function(event) 
+  if (event == "AddedItemToInventory") then
+    _P("ten second has passed")
+
+    for  _, entry in pairs(equiping) do
+        character = entry.character
+        mapkey = entry.mapkey
+
+        -- Then we have to get the actual id
+        _P("local uuid = Osi.GetItemByTemplateInInventory( ",mapkey ,", ", character ," ) ")
+        local uuid = Osi.GetItemByTemplateInInventory(mapkey, character)
+        _P("Id of spawned item is ", uuid)
+
+        -- Then we can equip
+        Osi.Equip(character,uuid)
+        end
+    end
+end)

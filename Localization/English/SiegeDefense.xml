@@ -49,4 +49,12 @@
     <content contentuid="h6a11e586468e404c9643a27deafedf8854d7" version="1">regain siege point</content>
     <content contentuid="h4195cdee290c4364ac2a396700efad81c489" version="1">siege points setup</content>
     <content contentuid="h95568a6bd7f6419d9a8f99ef7fa11d2e9g6f" version="1">Cast this spell to setup initial siege point amount. should be run by se, dont give to player.</content>
+    <content contentuid="h6b740abb58d1484b99c67e621aff0529c004" version="1">Update Weapons</content>
+    <content contentuid="he4d522d3766342388309fd13ff1cd60ce308" version="1">Spell container for upgrading weapons</content>
+    <content contentuid="hde4ce9a0114e4481b5f8566d6f3e82d395eb" version="1">Weapon Uppraded!</content>
+    <content contentuid="h4ad75272fa0f4d61b182cc7b188e81bb5459" version="1">hb7b4ba32g7eb7g4609ga0b5ge3e7d5541626</content>
+    <content contentuid="hf130753db3ad4d0397f8c268d26597312bbb" version="1">Upgrade Abilities</content>
+    <content contentuid="hcf3eafc00cc5447893996a18ad7cc219b8f8" version="1">Upgrade abilities container spell</content>
+    <content contentuid="hea15ad5ba6774972be085c4e2fd293674828" version="1">Upgrade  Weapons</content>
+    <content contentuid="h513d3cbfd2bd4b18bdd7a00d51e7dd54f4da" version="1">Upgrade Weapons descip</content>
 </contentList>

@@ -6,7 +6,7 @@
             <children>
                 <node id="SpellList">
                     <attribute id="Comment" type="LSString" value="Siege Defender Debug Spells"/>
-                    <attribute id="Spells" type="LSString" value="Debug_Spells;Upgrade_Abilities;Ally_Container_Goblins;Ally_Container_Skeletons"/>
+                    <attribute id="Spells" type="LSString" value="Debug_Spells;Upgrade_Abilities;Upgrade_Weapons;Ally_Container_Goblins;Ally_Container_Skeletons"/>
                     <attribute id="UUID" type="guid" value="eac51d20-1cbd-4a0c-841f-3f2f8d90ec7f"/>
                 </node>
                 <node id="SpellList">
