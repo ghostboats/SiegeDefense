@@ -164,9 +164,12 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
         debugID = 'debug_Goblins_Female_Caster_' .. debugID --if i ever have a problem with this, note how i change debugID after setting id and getting position
         entityStates[debugID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
     elseif status == "Upgrade_Weaponholder_Status" then
-        equipmentHandling(Osi.GetHostCharacter(), "c65c5dd5-705c-4103-904c-0835d81bd846")
         Ext.Utils.Print('nice')
-        Ext.Utils.Print(Osi.GetHostCharacter())
+        Ext.Utils.Print('player guid:' .. Osi.GetHostCharacter())
+        Ext.Utils.Print('guid:' ..guid)
+        Ext.Utils.Print('template version of guid: ' .. Osi.GetTemplate(guid))
+        --equipmentHandling(Osi.GetTemplate(guid), "d1082e88-b1e2-479d-913f-1413784d95a1")
+        equipmentHandling(Osi.GetHostCharacter(), "d1082e88-b1e2-479d-913f-1413784d95a1")
     elseif status == "DYING" then
         local entityState = entityStates[guid]
         if entityState then
@@ -295,10 +298,9 @@ function equipmentHandling(character, mapkey)
         for _, entry in pairs(equiping) do
             character = entry.character
             mapkey = entry.mapkey
-
             -- Then we have to get the actual id
             _P("local uuid = Osi.GetItemByTemplateInInventory(", mapkey, ", ", character, ")")
-            local uuid = Osi.GetItemByTemplateInInventory(mapkey, character)
+            local uuid = Osi.GetItemByTemplateInInventory(mapkey, Osi.GetHostCharacter())
             _P("Id of spawned item is ", uuid)
 
             -- Then we can equip
@@ -308,26 +310,3 @@ function equipmentHandling(character, mapkey)
 
     -- TODO: After that, we probably should destroy unused ones, or give the player a button or something
 end
-
-
--- LISTENERS
---------------------------------------------------------------
-
- Ext.Osiris.RegisterListener("TimerFinished",1,"after",function(event) 
-  if (event == "AddedItemToInventory") then
-    _P("ten second has passed")
-
-    for  _, entry in pairs(equiping) do
-        character = entry.character
-        mapkey = entry.mapkey
-
-        -- Then we have to get the actual id
-        _P("local uuid = Osi.GetItemByTemplateInInventory( ",mapkey ,", ", character ," ) ")
-        local uuid = Osi.GetItemByTemplateInInventory(mapkey, character)
-        _P("Id of spawned item is ", uuid)
-
-        -- Then we can equip
-        Osi.Equip(character,uuid)
-        end
-    end
-end)
