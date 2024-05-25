@@ -1,0 +1,1 @@
+print("Map2.lua script executed.")
