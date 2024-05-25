@@ -130,12 +130,12 @@ end)
 
 -- StatusApplied Listener
 Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
+    local mapConfig = mapConfigs[status]
     if status == 'Map0' then
         HandleStartGameMap(mapConfig)
     elseif status == 'Map1' then
         HandleStartGameMap(mapConfig)
     end
-    local mapConfig = mapConfigs[status]
     if not mapConfig.exclude[status] then
         Ext.Utils.Print('Status applied: ' .. status .. ' to GUID: ' .. guid)
     end
