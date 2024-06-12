@@ -1,18 +1,81 @@
+
 -- Global table to store entity states
-local entityStates = {}
+PersistentVars = PersistentVars or {}
+local hf = Ext.Require('HelperFunctions.lua')
 local mapConfig0 = Ext.Require('Maps/Map0.lua')
-local helperFunctions = Ext.Require('HelperFunctions.lua')
+local currentMapInfo = {}
+
+-- Register a listener for the network message from the client
+Ext.RegisterNetListener("UpdateSiegeDefenseMode", function(channel, payload, user)
+    Ext.Utils.Print("Server received message: " .. payload)
+    local data = Ext.Json.Parse(payload)
+    PersistentVars.siegeDefenseEnabled = data.state
+    Ext.Utils.Print("Server updated siegeDefenseModeEnabled: " .. tostring(PersistentVars.siegeDefenseEnabled))
+end)
+
+Ext.RegisterNetListener("MapSelected", function(channel, payload, user)
+    Ext.Utils.Print("Server received map selection: " .. payload)
+    local data = Ext.Json.Parse(payload)
+    local selectedMap = data.mapName
+    Ext.Utils.Print("Selected map: " .. selectedMap)
+    if selectedMap == 'MapName0' then
+        Osi.PROC_DEBUG_TeleportToAct('act1')
+        currentMapInfo = mapConfig0
+    end
+end)
 
 -- LevelLoaded Listener
 Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
-	Ext.Utils.Print("Level Loaded: " .. level)
-	if level == "WLD_Main_A" then
-        --Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game', Osi.GetHostCharacter())
-        Ext.Utils.Print("Level Loaded: " .. level)
-	elseif level == "TUT_Avernus_C" then
-		Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game_Leave_Tut', Osi.GetHostCharacter())
-	end
+    Ext.Utils.Print("Level Loaded: " .. level)
+    if level == "TUT_Avernus_C" and (PersistentVars.siegeDefenseEnabled == nil or PersistentVars.siegeDefenseEnabled == false) then
+        Osi.UseSpell(Osi.GetHostCharacter(), 'Start_Game_Check', Osi.GetHostCharacter())
+    end
+    if PersistentVars.siegeDefenseEnabled == nil or PersistentVars.siegeDefenseEnabled == false then
+        Ext.Utils.Print("Siege defense setting not enabled on this save, not loading anything related to it to keep save safe.")
+        return
+    end
+    if level == 'WLD_Main_A' and currentMapInfo then
+        hf.HandleStartGameMap(Osi.GetHostCharacter(), currentMapInfo)
+    end
+    Ext.Utils.Print("testiong")
 end)
+
+Ext.Osiris.RegisterListener("CastSpell", 5, "after", function(caster, spell, spellType, spellElement, storyActionID)
+    if spell == "Start_Game_Check" then
+        Ext.Net.BroadcastMessage("EnableMod", Ext.Json.Stringify(PersistentVars.siegeDefenseEnabled))
+    end
+end)
+
+-- Restore PersistentVars on session load
+function OnSessionLoaded()
+    PersistentVars = PersistentVars or {}
+    Ext.Utils.Print("Session Loaded, PersistentVars.siegeDefenseEnabled: " .. tostring(PersistentVars.siegeDefenseEnabled))
+end
+
+Ext.Events.SessionLoaded:Subscribe(OnSessionLoaded)
+
+
+Ext.Osiris.RegisterListener('EnteredCombat', 2, 'after', funtion(object, combatGuid)
+    
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Ext.Osiris.RegisterListener("CombatRoundStarted", 2, "before", function(combatGuid, round)
     Ext.Utils.Print("ROUND " .. tostring(round) .. " STARTING FOR COMBATGUID: " .. combatGuid)
@@ -118,150 +181,10 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     end
 end)
 
--- StatusApplied Listener
-Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
-    if not mapConfig0.exclude[status] then
-        Ext.Utils.Print('Status applied: ' .. status .. ' to GUID: ' .. guid)
-    end
-    if string.find(status, 'Spawn_Ally') then
-        local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
-        local parts = {}
-        for part in string.gmatch(status, "[^_]+") do
-            table.insert(parts, part)
-        end
 
-        if #parts >= 4 then--get & summon ally from name of RT mapkey variable in Map{#}.lua
-            local part3 = parts[3]:sub(1, 3):upper()
-            local part4 = parts[4]:sub(1, 3):upper()
-            local variableName = part3 .. "_" .. part4
-            local valueFromMapConfig0 = mapConfig0[variableName]
-
-            if valueFromMapConfig0 then
-                local ally_template = valueFromMapConfig0
-                Osi.Die(guid)
-                local allyID = CreateAt(ally_template, spawnX, spawnY + 3, spawnZ, 0, 0, "")
-                Osi.SetFaction(allyID, mapConfig0.f_ally)
-                local currentCombat = Osi.CombatGetGuidFor(Osi.GetHostCharacter())
-                if currentCombat then
-                    Osi.SetCombatGroupID(allyID, currentCombat)
-                end
-                local x, y, z = Osi.GetPosition(allyID)
-                entityStates[allyID] = {x = x, y = y, z = z, type = 'ally', currentTargetIndex = 'No Move'}
-            else
-                Ext.Utils.Print('No value found in mapConfig0 for key: ' .. tostring(variableName))
-            end
-        end
-	elseif status == "Map0" then
-        HandleStartGameMap(guid, mapConfig0)
-	elseif status == "LeaveTut" then
-        Osi.TeleportToPosition(guid, -84.692207336426, 19.01319694519, -387.45742797852, "", 1, 1, 1, 1, 1)
-    elseif status == "Debug_Spawn_Enemy_Status" then
-        local spawnX, spawnY, spawnZ = Osi.GetPosition(guid)
-        Osi.Die(guid)
-        local debugID = CreateAt(mapConfig0.DEBUG_ENEMY, spawnX, spawnY + 3, spawnZ, 0, 0, "")
-        Osi.SetFaction(debugID, mapConfig0.f_enemy)
-        local x, y, z = Osi.GetPosition(debugID)
-        debugID = 'debug_Goblins_Female_Caster_' .. debugID --if i ever have a problem with this, note how i change debugID after setting id and getting position
-        entityStates[debugID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
-    elseif status == "Upgrade_Weaponholder_Status" then
-        Ext.Utils.Print('nice')
-        Ext.Utils.Print('player guid:' .. Osi.GetHostCharacter())
-        Ext.Utils.Print('guid:' ..guid)
-        Ext.Utils.Print('template version of guid: ' .. Osi.GetTemplate(guid))
-        --equipmentHandling(Osi.GetTemplate(guid), "d1082e88-b1e2-479d-913f-1413784d95a1")
-        equipmentHandling(Osi.GetHostCharacter(), "d1082e88-b1e2-479d-913f-1413784d95a1")
-    elseif status == "DYING" then
-        local entityState = entityStates[guid]
-        if entityState then
-            local currentIndex = entityState.currentTargetIndex
-            local positions = mapConfig0.targetPositions
-            local lastPositionIndex = #positions - 1 -- Get the index of the last position in the array (sub by 1 since last position is far not intended to reach)
-
-            -- Debugging outputs
-            Ext.Utils.Print('Current Index: ' .. tostring(currentIndex))
-            Ext.Utils.Print('Last Position Index: ' .. tostring(lastPositionIndex))
-            Ext.Utils.Print('Current Entity Position: {' .. entityState.x .. ', ' .. entityState.y .. ', ' .. entityState.z .. '}')
-
-            -- Check if the current index matches the last index in the target positions
-            if currentIndex == lastPositionIndex then
-                -- Entity has reached the final position
-                Ext.Utils.Print('Entity reached final position before dying.')
-            else
-                -- Entity did not reach the final position and died
-                Ext.Utils.Print('Entity did not reach final position and was likely killed by a friendly unit. Regaining siege point.')
-                Osi.UseSpell(Osi.GetHostCharacter(), 'Regain_SiegePoint', Osi.GetHostCharacter())
-            end
-            entityStates[guid] = nil
-            Ext.Utils.Print('Entity state removed for GUID: ' .. guid)
-        else
-            Ext.Utils.Print('Doesnt exist in entity states, not deleted | GUID: ' .. guid)
-        end
-    elseif status == "Debug_Fake_Status" then
-        local x,y,z = Osi.GetPosition(guid)
-        --helperFunctions.TestFunction('my string')
-        Ext.Utils.Print('Guid of summoned object: '..guid)
-        Ext.Utils.Print("local targetPosition1 = {"..tostring(x)..","..tostring(y)..","..tostring(z).."}")
-        Ext.Utils.Print("local targetPosition2 = {x = "..tostring(x)..", y = "..tostring(y)..", z = "..tostring(z).."}")
-        Osi.AddGold(Osi.GetHostCharacter(), 1000)
-	end
-end)
 
 ------------------ functions ------------------------
 -- Function to handle startgame status
-function HandleStartGameMap(guid, mapConfig)
-    Osi.TeleportToPosition(guid, mapConfig.MAP_0[1], mapConfig.MAP_0[2], mapConfig.MAP_0[3], "", 1, 1, 1, 1, 1)
-    local lx, ly, lz = mapConfig.Crate1[1], mapConfig.Crate1[2], mapConfig.Crate1[3]
-    squirrelID = Osi.CreateAt(Osi.GetTemplate("S_DEN_Squirrel_35ed8eab-1e0b-4ec8-92f2-1b8510cb3ad8"), lx, ly, lz, 0, 1, "")
-    new_item_left = Osi.CreateAt(mapConfig.CRATE, lx, ly, lz, 0, 1, "")
-    last_item_left = PlaceBoxes(new_item_left, mapConfig.placements_left, mapConfig)
-
-    local rx, ry, rz = mapConfig.Crate2[1], mapConfig.Crate2[2], mapConfig.Crate2[3]
-    new_item_right = Osi.CreateAt(mapConfig.CRATE, rx, ry, rz, 0, 1, "")
-    last_item_right = PlaceBoxes(new_item_right, mapConfig.placements_right, mapConfig)
-
-    local initialID = CreateAt(mapConfig.DEBUG_ENEMY, 218.16305, 16.377229, 319.40869, 0,0,"")
-    Osi.SetFaction(initialID, mapConfig.f_enemy)
-    local x, y, z = Osi.GetPosition(initialID)
-    --add eneity name to guid
-    initialID = 'debug_Goblins_Female_Caster_' .. initialID
-    entityStates[initialID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
-    Osi.UseSpell(Osi.GetHostCharacter(), 'Siege_Points_Setup', Osi.GetHostCharacter())
-end
-
-function PlaceBoxes(item, placements, mapConfig)
-    local new_item = item
-    local first_row_last_item = nil
-    local x, y, z = Osi.GetPosition(new_item)
-
-    for _, placement in ipairs(placements) do
-        local direction = placement.direction or "east"
-        local distance = placement.distance or 0
-        local height = placement.height or 1
-
-        for current_height = 0, height - 1 do
-            for current_distance = 1, distance do
-                if direction == 'north' then
-                    new_item = Osi.CreateAt(mapConfig.CRATE, x, y + current_height, z + current_distance, 0, 1, "")
-                elseif direction == 'east' then
-                    new_item = Osi.CreateAt(mapConfig.CRATE, x + current_distance, y + current_height, z, 0, 1, "")
-                elseif direction == 'south' then
-                    new_item = Osi.CreateAt(mapConfig.CRATE, x, y + current_height, z - current_distance, 0, 1, "")
-                elseif direction == 'west' then
-                    new_item = Osi.CreateAt(mapConfig.CRATE, x - current_distance, y + current_height, z, 0, 1, "")
-                end
-
-                if current_height == 0 and current_distance == distance then-- Storing last item of first row
-                    first_row_last_item = new_item
-                end
-            end
-            Ext.Utils.Print('Row Created At Height: ' .. tostring(current_height) .. '    Direction: ' .. direction)
-        end
-        -- Update x, y, z for the next placement
-        x, y, z = Osi.GetPosition(first_row_last_item)
-    end
-
-    return first_row_last_item
-end
 
 
 
