@@ -4,6 +4,7 @@ PersistentVars = PersistentVars or {}
 local hf = Ext.Require('HelperFunctions.lua')
 local mapConfig0 = Ext.Require('Maps/Map0.lua')
 local currentMapInfo = {}
+local entitiesTable = {}
 
 -- Register a listener for the network message from the client
 Ext.RegisterNetListener("UpdateSiegeDefenseMode", function(channel, payload, user)
@@ -55,8 +56,8 @@ end
 Ext.Events.SessionLoaded:Subscribe(OnSessionLoaded)
 
 
-Ext.Osiris.RegisterListener('EnteredCombat', 2, 'after', funtion(object, combatGuid)
-    
+Ext.Osiris.RegisterListener('EnteredCombat', 2, 'after', function(object, combatGuid)
+    Ext.Utils.Print(object .. " entered combat: " .. combatGuid)
 end)
 
 
