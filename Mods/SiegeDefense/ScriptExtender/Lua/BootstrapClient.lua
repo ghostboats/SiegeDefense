@@ -18,6 +18,12 @@ Ext.RegisterNetListener("EnableMod", function(channel, payload, user)
     allWindows.siegeDefenseW = siegeDefenseW -- Assign directly to the key
 end)
 
+Ext.RegisterNetListener("SummonAllyWindow", function(channel, payload, user)
+    _D('in Summon Ally Window')
+    local summonAllyW = hf.MYGUI(wp.summonAllyWParams)
+end)
+
+
 -- Modify the onChange event in siegeDefenseWParams to show the map selection window when checked
 wp.siegeDefenseWParams.components[2].onChange = function(self, state)
     Ext.Utils.Print("Checkbox state changed: " .. tostring(state))
