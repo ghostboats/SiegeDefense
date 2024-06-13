@@ -80,8 +80,8 @@ end)
 
 Ext.Osiris.RegisterListener("CombatRoundStarted", 2, "before", function(combatGuid, round)
     Ext.Utils.Print("ROUND " .. tostring(round) .. " STARTING FOR COMBATGUID: " .. combatGuid)
-    Ext.Utils.Print("ENTITYSTATES TABLE:")
-    for cguid, state in pairs(entityStates) do
+    Ext.Utils.Print("entitiesTable:")
+    for cguid, state in pairs(entitiesTable) do
         local coords = "{" .. state.x .. ", " .. state.y .. ", " .. state.z .. "}"
         local allegiance = state.type or "Unknown"
         local targetIndex = state.currentTargetIndex or "N/A"
@@ -91,15 +91,15 @@ Ext.Osiris.RegisterListener("CombatRoundStarted", 2, "before", function(combatGu
     end
     Ext.Utils.Print("SPAWNING")
     -- Check if there are enemies to spawn this round
-    local spawnInfo = mapConfig0.enemySpawns["Round " .. tostring(round)] -- for descriptive keys
-    -- local spawnInfo = mapConfig0.enemySpawns[round] -- for numeric indices
+    local spawnInfo = currentMapInfo.enemySpawns["Round " .. tostring(round)] -- for descriptive keys
+    -- local spawnInfo = currentMapInfo.enemySpawns[round] -- for numeric indices
     if spawnInfo then
         for _, enemy in ipairs(spawnInfo) do
             Ext.Utils.Print("Spawning " .. enemy.enemyName .. " at coordinates: {" .. enemy.coords.x .. ", " .. enemy.coords.y .. ", " .. enemy.coords.z .. "}")
             local enemyID = CreateAt(Osi.GetTemplate(enemy.enemyName), enemy.coords.x, enemy.coords.y, enemy.coords.z, 0,0,"")
-            Osi.SetFaction(enemyID, mapConfig0.f_enemy)
+            Osi.SetFaction(enemyID, currentMapInfo.f_enemy)
             local x, y, z = Osi.GetPosition(enemyID)
-            entityStates[enemyID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
+            entitiesTable[enemyID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
         end
     else
         Ext.Utils.Print("No enemies to spawn this round.")
@@ -112,11 +112,11 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
     Ext.Utils.Print("Turn has started for character: " .. characterGuid)
     local factionID = Osi.GetFaction(characterGuid)
     local trimmedFactionID = factionID:gsub("^Evil NPC_", "")
-    if trimmedFactionID == mapConfig0.f_enemy then
+    if trimmedFactionID == currentMapInfo.f_enemy then
         Ext.Utils.Print('Adding into characterTargers')
         local currentTargetIndex = 0  -- Default value
-        if entityStates[characterGuid] then
-            currentTargetIndex = entityStates[characterGuid].currentTargetIndex  -- Keep existing value otherwise
+        if entitiesTable[characterGuid] then
+            currentTargetIndex = entitiesTable[characterGuid].currentTargetIndex  -- Keep existing value otherwise
         else
             Ext.Utils.Print('no entry maybe')
         end
@@ -126,7 +126,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
         
         while movementLeft > 0 do
             Ext.Utils.Print("starting loop again")
-            local nextTarget = mapConfig0.targetPositions[currentTargetIndex+1]
+            local nextTarget = currentMapInfo.targetPositions[currentTargetIndex+1]
             if nextTarget == nil then
                 Ext.Utils.Print("num 1")
                 Osi.ApplyDamage(Osi.GetHostCharacter(), 1, 'Piercing')
@@ -135,7 +135,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
             end
             local distanceToTarget = Osi.GetDistanceToPosition(characterGuid, nextTarget.x, nextTarget.y, nextTarget.z)
             if  movementLeft > distanceToTarget then--will overshoot position, need to move to next position and repeat
-                if currentTargetIndex < #mapConfig0.targetPositions then-- Move to the next target
+                if currentTargetIndex < #currentMapInfo.targetPositions then-- Move to the next target
                     currentTargetIndex = currentTargetIndex + 1
                     Ext.Utils.Print("Moving towards Target #" .. currentTargetIndex .. ": {" .. nextTarget.x .. ", " .. nextTarget.y .. ", " .. nextTarget.z .. "}")
                     Osi.CharacterMoveToPosition(characterGuid, nextTarget.x, nextTarget.y, nextTarget.z, '10', "", 1)
@@ -154,7 +154,7 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
         local x,y,z = Osi.GetPosition(characterGuid)
         local closestAllyGUID = nil
         local minDistance = math.huge
-        for guid, state in pairs(entityStates) do
+        for guid, state in pairs(entitiesTable) do
             if state.type == 'ally' and guid ~= characterGuid then
                 local distance = math.sqrt((x - state.x)^2 + (y - state.y)^2 + (z - state.z)^2)
                 if distance < minDistance then
@@ -170,10 +170,10 @@ Ext.Osiris.RegisterListener("TurnStarted", 1, "before", function(characterGuid)
             Osi.Attack(characterGuid, closestAllyGUID, 1)
             local qx,qy,qz = Osi.GetPosition(characterGuid)
             --always saves start pos not end pos. use index for loc info.
-            entityStates[characterGuid] = {x = qx, y = qy, z = qz, type = 'enemy', currentTargetIndex = currentTargetIndex}
+            entitiesTable[characterGuid] = {x = qx, y = qy, z = qz, type = 'enemy', currentTargetIndex = currentTargetIndex}
         else
             local qx,qy,qz = Osi.GetPosition(characterGuid)
-            entityStates[characterGuid] = {x = qx, y = qy, z = qz, type = 'enemy', currentTargetIndex = currentTargetIndex}
+            entitiesTable[characterGuid] = {x = qx, y = qy, z = qz, type = 'enemy', currentTargetIndex = currentTargetIndex}
         end
     elseif not string.find(characterGuid, 'Player') then
         Osi.ApplyStatus(characterGuid, 'Ally_Generic', 10, 1, characterGuid)
