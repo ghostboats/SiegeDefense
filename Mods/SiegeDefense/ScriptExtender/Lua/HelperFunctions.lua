@@ -47,10 +47,9 @@ function helperFunctions.selectMap(mapName, allWindows)
 end
 
 -- Function to handle starting the game map
-function helperFunctions.HandleStartGameMap(guid, mapConfig)
+function helperFunctions.HandleStartGameMap(guid, mapConfig, entitiesTable)
     Osi.TeleportToPosition(guid, mapConfig.MAP_0[1], mapConfig.MAP_0[2], mapConfig.MAP_0[3], "", 1, 1, 1, 1, 1)
     local lx, ly, lz = mapConfig.Crate1[1], mapConfig.Crate1[2], mapConfig.Crate1[3]
-    squirrelID = Osi.CreateAt(Osi.GetTemplate("S_DEN_Squirrel_35ed8eab-1e0b-4ec8-92f2-1b8510cb3ad8"), lx, ly, lz, 0, 1, "")
     new_item_left = Osi.CreateAt(mapConfig.CRATE, lx, ly, lz, 0, 1, "")
     last_item_left = PlaceBoxes(new_item_left, mapConfig.placements_left, mapConfig)
 
@@ -63,8 +62,43 @@ function helperFunctions.HandleStartGameMap(guid, mapConfig)
     local x, y, z = Osi.GetPosition(initialID)
     --add entity name to guid
     initialID = 'debug_Goblins_Female_Caster_' .. initialID
-    --entityStates[initialID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
+    entitiesTable[initialID] = {x = x, y = y, z = z, type = 'enemy', currentTargetIndex = 0}
     Osi.UseSpell(Osi.GetHostCharacter(), 'Siege_Points_Setup', Osi.GetHostCharacter())
+    return entitiesTable
+end
+
+
+function helperFunctions.deepPrint(obj, indent)
+    indent = indent or 0
+    local formatting = string.rep("  ", indent)
+
+    if type(obj) == "table" then
+        for key, value in pairs(obj) do
+            if type(value) == "table" then
+                Ext.Utils.Print(formatting .. tostring(key) .. ":")
+                helperFunctions.deepPrint(value, indent + 1)
+            else
+                Ext.Utils.Print(formatting .. tostring(key) .. ": " .. tostring(value))
+            end
+        end
+    elseif type(obj) == "userdata" then
+        Ext.Utils.Print(formatting .. "userdata of type: " .. tostring(obj))
+        -- Iterate over known properties and methods
+        local knownMethods = {"GetAllComponents", "GetComponent", "GetAllComponentNames"}
+        for _, method in ipairs(knownMethods) do
+            if obj[method] then
+                Ext.Utils.Print(formatting .. method .. ":")
+                local success, result = pcall(obj[method], obj, "")
+                if success then
+                    helperFunctions.deepPrint(result, indent + 1)
+                else
+                    Ext.Utils.Print(formatting .. "  Error calling " .. method .. ": " .. tostring(result))
+                end
+            end
+        end
+    else
+        Ext.Utils.Print(formatting .. tostring(obj))
+    end
 end
 
 

@@ -23,6 +23,7 @@ Ext.RegisterNetListener("MapSelected", function(channel, payload, user)
         Osi.PROC_DEBUG_TeleportToAct('act1')
         currentMapInfo = mapConfig0
     end
+    PersistentVars.currentMapName = selectedMap
 end)
 
 -- LevelLoaded Listener
@@ -36,7 +37,7 @@ Ext.Osiris.RegisterListener("LevelLoaded", 1, "after", function(level)
         return
     end
     if level == 'WLD_Main_A' and currentMapInfo then
-        hf.HandleStartGameMap(Osi.GetHostCharacter(), currentMapInfo)
+        entitiesTable = hf.HandleStartGameMap(Osi.GetHostCharacter(), currentMapInfo, entitiesTable)
     end
     Ext.Utils.Print("testiong")
 end)
@@ -44,8 +45,7 @@ end)
 Ext.Osiris.RegisterListener("CastSpell", 5, "after", function(caster, spell, spellType, spellElement, storyActionID)
     if spell == "Start_Game_Check" then
         Ext.Net.BroadcastMessage("EnableMod", Ext.Json.Stringify(PersistentVars.siegeDefenseEnabled))
-    end
-    elseif spell == "Summon_Ally" then
+    elseif spell == "SummonAllyWindow" then
         Ext.Net.BroadcastMessage("SummonAllyWindow", Ext.Json.Stringify(entitiesTable))
     end
 
@@ -55,6 +55,7 @@ end)
 function OnSessionLoaded()
     PersistentVars = PersistentVars or {}
     Ext.Utils.Print("Session Loaded, PersistentVars.siegeDefenseEnabled: " .. tostring(PersistentVars.siegeDefenseEnabled))
+    Ext.Utils.Print("Session Loaded, currentMapInfo: " .. (PersistentVars.currentMapName or "None"))
 end
 
 Ext.Events.SessionLoaded:Subscribe(OnSessionLoaded)
@@ -79,6 +80,7 @@ end)
 
 -- StatusApplied Listener
 Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, causee, storyactionid)
+    currentMapInfo = mapConfig0
     if not currentMapInfo.exclude[status] then
         Ext.Utils.Print('Status applied: ' .. status .. ' to GUID: ' .. guid)
     end
@@ -106,6 +108,14 @@ Ext.Osiris.RegisterListener("StatusApplied", 4, "after", function(guid, status, 
                 end
                 local x, y, z = Osi.GetPosition(allyID)
                 entitiesTable[allyID] = {x = x, y = y, z = z, type = 'ally', currentTargetIndex = 'No Move'}
+                local test = Ext.Entity.Get(allyID)
+                --local components = Ext.Entity.Get(allyID):GetAllComponents()
+                _D(test.Uuid.EntityUuid)
+                _D(Ext.Loca.GetTranslatedString(test.DisplayName.NameKey.Handle.Handle))
+                --_D(components)
+                --_D(test:GetAllComponents())
+                _D(test)
+                hf.deepPrint(test)
             else
                 Ext.Utils.Print('No value found in currentMapInfo for key: ' .. tostring(variableName))
             end

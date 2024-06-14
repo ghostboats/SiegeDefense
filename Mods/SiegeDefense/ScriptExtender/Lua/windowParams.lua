@@ -43,4 +43,62 @@ windowParams.mapSelectionWParams = {
     }
 }
 
+windowParams.summonAllyWParams = {
+    title = "Summon Ally",
+    components = {
+        {
+            type = "inputText",
+            label = "Search Entity",
+            value = ""
+        },
+        {
+            type = "checkbox",
+            label = "Filter Melee",
+            checked = true,
+            onChange = function(self, state)
+                -- Add your filter logic here
+            end
+        },
+        {
+            type = "checkbox",
+            label = "Filter Ranged",
+            checked = false,
+            onChange = function(self, state)
+                -- Add your filter logic here
+            end
+        },
+        {
+            type = "table",
+            label = "Entity Table",
+            columns = 3,
+            rows = {
+                {
+                    { type = "text", value = "Unit" },
+                    { type = "text", value = "Type" },
+                    { type = "text", value = "Level" }
+                },
+                {
+                    { type = "image", value = "path/to/unit1/icon.png" },
+                    { type = "text", value = "Unit Name 1" },
+                    { type = "text", value = "Melee" },
+                    { 
+                        type = "inputText", 
+                        label = "Level", 
+                        value = "1", 
+                        options = { "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9", "Level 10", "Level 11", "Level 12" } 
+                    },
+                    { 
+                        type = "button", 
+                        label = "Spawn", 
+                        onClick = function() 
+                            -- Add logic to close the window and send message to server
+                        end 
+                    }
+                },
+                -- Add more rows as needed
+            }
+        }
+    }
+}
+
 return windowParams

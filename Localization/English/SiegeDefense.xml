@@ -58,4 +58,10 @@
     <content contentuid="hea15ad5ba6774972be085c4e2fd293674828" version="1">Upgrade  Weapons</content>
     <content contentuid="h513d3cbfd2bd4b18bdd7a00d51e7dd54f4da" version="1">Upgrade Weapons descip</content>
     <content contentuid="h1dac07a0192f4177b51f3e1500d2c46b282g" version="1">start game check</content>
+    <content contentuid="h7f071cb7e63640f19e85df1187d37f68gb5e" version="1">summon ally window</content>
+    <content contentuid="h3c1c3e589594457797816312fcda4d950be9" version="1">summon ally window description</content>
+    <content contentuid="hc5cc54a460524b7386adba5c77aba402e499" version="1">Continer spell for mepthits</content>
+    <content contentuid="ha76e5afa697d40c9b316821713ed8b4e6279" version="1">description for continaer spell</content>
+    <content contentuid="h7852e2a5546548f7ac771a5d4606d357ddc1" version="1">Spawn_Ally_Mephit_Mud status</content>
+    <content contentuid="ha02e0f79d6b1468b950db6b4e6da8ff0c914" version="1">Spawn_Ally_Mephit_Mud status descrip</content>
 </contentList>

@@ -2,6 +2,7 @@ local map0 = {}
 
 ---------------------- Debug Stuff ----------------------
 map0.DEBUG_ENEMY = 'debug_Goblins_Female_Caster_451ba53a-9070-4d9e-b7f8-6322b64277ea'
+map0.INITIAL = 'S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6'
 map0.exclude = {
     ["Spawn_Ally"] = false,
     ["Map0"] = false,
@@ -23,6 +24,8 @@ map0.GOB_CAS = 'SD_Goblins_Female_Caster_bdb41598-98a3-44dd-a287-6c8882ea0441'
 map0.SKE_RAN = 'Undead_Skeleton_Ranger_4f45e5ab-b93c-4afd-8a21-9c87d653d4b8'
 map0.SKE_MEL = 'Undead_Skeleton_Melee_145fc868-9353-4ef1-8a1d-419fe96533fb'
 
+map0.MEP_MUD = 'SD_Mephit_Mud_A_18431c73-c15e-45e3-b6c0-323b1137acb9'
+
 ------------------------ Faction ------------------------
 map0.f_enemy = '64321d50-d516-b1b2-cfac-2eb773de1ff6'
 map0.f_ally = '6545a015-1b3d-66a4-6a0e-6ec62065cdb7'
@@ -38,13 +41,13 @@ map0.CRATE = "97cdac50-9435-4174-b3bc-fe16fad7b169"
 
 map0.enemySpawns = {
     ["Round 1"] = {
-        {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
-        {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
+    --    {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
+        {enemyName = "S_UND_GnomeWorkerQuiet_Trapped_56f89b9d-c9f7-45ff-9159-12e770cbb0a6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
     },
     ["Round 2"] = {
         {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
-        {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
-        {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
+    --    {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
+    --    {enemyName = "S_GOB_GoblinJolly_59557329-d49b-448b-bdd0-fd66ae0d67f6", coords = {x = 218.16305541992, y = 16.377229690552, z = 319.40869140625}},
     },
     -- Add more rounds as necessary
 }

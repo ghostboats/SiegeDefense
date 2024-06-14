@@ -21,6 +21,7 @@ end)
 Ext.RegisterNetListener("SummonAllyWindow", function(channel, payload, user)
     _D('in Summon Ally Window')
     local summonAllyW = hf.MYGUI(wp.summonAllyWParams)
+    allWindows.summonAllyW = summonAllyW
 end)
 
 
